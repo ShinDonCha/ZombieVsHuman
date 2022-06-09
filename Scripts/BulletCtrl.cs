@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// 수정수정수정123
+
 [RequireComponent(typeof(Rigidbody))]
 public class BulletCtrl : MonoBehaviour
 {
