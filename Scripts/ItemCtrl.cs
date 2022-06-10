@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,18 +12,18 @@ public class ItemCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int a_rnd = Random.Range(0, m_itemInven.Length);        //µî·ÏµÈ ¾ÆÀÌÅÛ °³¼öÀÇ ¹üÀ§¿¡¼­ ·£´ı ¼ıÀÚ »Ì±â
-        GameObject a_go = Instantiate(m_itemInven[a_rnd]);      //·£´ıÀ¸·Î ¾ÆÀÌÅÛ ¸ğµ¨ °áÁ¤
-        a_go.transform.SetParent(transform, false);             //Item¿ÀºêÁ§Æ®ÀÇ Â÷ÀÏµå·Î ºÙÀÌ±â
+        int a_rnd = Random.Range(0, m_itemInven.Length);        //ë“±ë¡ëœ ì•„ì´í…œ ê°œìˆ˜ì˜ ë²”ìœ„ì—ì„œ ëœë¤ ìˆ«ì ë½‘ê¸°
+        GameObject a_go = Instantiate(m_itemInven[a_rnd]);      //ëœë¤ìœ¼ë¡œ ì•„ì´í…œ ëª¨ë¸ ê²°ì •
+        a_go.transform.SetParent(transform, false);             //Itemì˜¤ë¸Œì íŠ¸ì˜ ì°¨ì¼ë“œë¡œ ë¶™ì´ê¸°
 
-        //----- ¾î¶² ¾ÆÀÌÅÛÀÎÁö¿¡ µû¶ó¼­ Å¸ÀÔ ¹Ù²ãÁÖ±â
+        //----- ì–´ë–¤ ì•„ì´í…œì¸ì§€ì— ë”°ë¼ì„œ íƒ€ì… ë°”ê¿”ì£¼ê¸°
         if (a_go.name.Contains("K2"))
             m_itemType = ItemType.K2;
         else if (a_go.name.Contains("M16"))
             m_itemType = ItemType.M16;
         else if (a_go.name.Contains("Bat"))
             m_itemType = ItemType.Bat;
-        //----- ¾î¶² ¾ÆÀÌÅÛÀÎÁö¿¡ µû¶ó¼­ Å¸ÀÔ ¹Ù²ãÁÖ±â
+        //----- ì–´ë–¤ ì•„ì´í…œì¸ì§€ì— ë”°ë¼ì„œ íƒ€ì… ë°”ê¿”ì£¼ê¸°
     }
 
     // Update is called once per frame
@@ -32,8 +32,8 @@ public class ItemCtrl : MonoBehaviour
         
     }
 
-    //Ã¹¹øÂ°·Î µé¾î¿Â ½ºÇÁ¶óÀÌÆ®¿¡ boolÇüÀ» Ãß°¡ÇØ¼­ true·Î ¸¸µç´Ù?
-    //°Ë»çÇÏ´Â ÇÔ¼ö¸¦ ¸¸µé¾î¾ßÇÏ´Âµ¥..
+    //ì²«ë²ˆì§¸ë¡œ ë“¤ì–´ì˜¨ ìŠ¤í”„ë¼ì´íŠ¸ì— boolí˜•ì„ ì¶”ê°€í•´ì„œ trueë¡œ ë§Œë“ ë‹¤?
+    //ê²€ì‚¬í•˜ëŠ” í•¨ìˆ˜ë¥¼ ë§Œë“¤ì–´ì•¼í•˜ëŠ”ë°..
 
     private void OnTriggerEnter(Collider other)
     {

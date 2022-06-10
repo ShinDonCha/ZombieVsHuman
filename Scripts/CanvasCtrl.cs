@@ -1,19 +1,19 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CanvasCtrl : MonoBehaviour
 {
-    public Text m_explainMessage;                   //"FÅ°¸¦ ´©¸£¸é ¾ÆÀÌÅÛÀ» ÁÖ¿ï ¼ö ÀÖ½À´Ï´Ù." ÅØ½ºÆ®
-    public GameObject m_invenPanel;                 //ÀÎº¥Åä¸® ÆÇ³Ú ´ã´Â º¯¼ö
-    public GameObject m_rootContent = null;         //InventoryPanel ¾ÈÀÇ RootBackImg ¾ÈÀÇ ÀÖ´Â ¾ÆÀÌÅÛ ¹öÆ°À» ´ãÀ» RootPanel
-    public GameObject m_invenContent = null;        //InventoryPanel ¾ÈÀÇ inventoryBackImg ¾ÈÀÇ ÀÖ´Â ¾ÆÀÌÅÛ ¹öÆ°À» ´ãÀ» inventoryPanel
-    public GameObject m_slotObj = null;             //slot °ÔÀÓ¿ÀºêÁ§Æ®      
-    private int m_invenFullSlotCount = 12;                   //invenPanel¿¡ ³Ö¾îÁÙ ¹öÆ° °³¼ö
-    private int m_rootFullSlotCount = 28;               //rootPanel¿¡ ³Ö¾îÁÙ ¹öÆ° °³¼ö
+    public Text m_explainMessage;                   //"Fí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì•„ì´í…œì„ ì£¼ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤." í…ìŠ¤íŠ¸
+    public GameObject m_invenPanel;                 //ì¸ë²¤í† ë¦¬ íŒë„¬ ë‹´ëŠ” ë³€ìˆ˜
+    public GameObject m_rootContent = null;         //InventoryPanel ì•ˆì˜ RootBackImg ì•ˆì˜ ìˆëŠ” ì•„ì´í…œ ë²„íŠ¼ì„ ë‹´ì„ RootPanel
+    public GameObject m_invenContent = null;        //InventoryPanel ì•ˆì˜ inventoryBackImg ì•ˆì˜ ìˆëŠ” ì•„ì´í…œ ë²„íŠ¼ì„ ë‹´ì„ inventoryPanel
+    public GameObject m_slotObj = null;             //slot ê²Œì„ì˜¤ë¸Œì íŠ¸      
+    private int m_invenFullSlotCount = 12;                   //invenPanelì— ë„£ì–´ì¤„ ë²„íŠ¼ ê°œìˆ˜
+    private int m_rootFullSlotCount = 28;               //rootPanelì— ë„£ì–´ì¤„ ë²„íŠ¼ ê°œìˆ˜
     
-    private Vector3 slotSize = Vector3.one;         //Slot »çÀÌÁî ¼öµ¿Á¶ÀıÀ» À§ÇÑ Vector º¯¼ö (1,1,1)
+    private Vector3 slotSize = Vector3.one;         //Slot ì‚¬ì´ì¦ˆ ìˆ˜ë™ì¡°ì ˆì„ ìœ„í•œ Vector ë³€ìˆ˜ (1,1,1)
 
     // Start is called before the first frame update
     void Start()
@@ -24,10 +24,10 @@ public class CanvasCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ExplainMsg();   //"FÅ° ~" ¸Ş½ÃÁö Ãâ·ÂÁ¶Àı ÇÔ¼ö                
+        ExplainMsg();   //"Fí‚¤ ~" ë©”ì‹œì§€ ì¶œë ¥ì¡°ì ˆ í•¨ìˆ˜                
     }
 
-    void ExplainMsg()   //¾ÆÀÌÅÛ Áİ±â Å° Ç¥½Ã
+    void ExplainMsg()   //ì•„ì´í…œ ì¤ê¸° í‚¤ í‘œì‹œ
     {
         if (PlayerCtrl.inst.m_itemList.Count <= 0)
             m_explainMessage.gameObject.SetActive(false);
@@ -35,28 +35,28 @@ public class CanvasCtrl : MonoBehaviour
             m_explainMessage.gameObject.SetActive(true);
     }
 
-    public void PanelContrl()       // PanelÀÌ µÎ°³¶ó ÇÔ¼öÀÌ¸§¸¸ ¼öÁ¤ÇÔ.
+    public void PanelContrl()       // Panelì´ ë‘ê°œë¼ í•¨ìˆ˜ì´ë¦„ë§Œ ìˆ˜ì •í•¨.
     {
-        m_invenPanel.SetActive(PlayerCtrl.inst.m_isLoot);       //ÆÇ³Ú º¸ÀÌ±â, ¾Èº¸ÀÌ±â
+        m_invenPanel.SetActive(PlayerCtrl.inst.m_isLoot);       //íŒë„¬ ë³´ì´ê¸°, ì•ˆë³´ì´ê¸°
 
-        if (PlayerCtrl.inst.m_isLoot == true)                //Áİ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ÇÏ°íÀÖÀ½
+        if (PlayerCtrl.inst.m_isLoot == true)                //ì¤ëŠ” ì• ë‹ˆë©”ì´ì…˜ì„ í•˜ê³ ìˆìŒ
         {
-            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;            //Áİ´Âµ¿¾È ÀÌµ¿¸øÇÏ°Ô ¸·±â                                
-            Cursor.lockState = CursorLockMode.None;         //Áİ´Âµ¿¾È ¸¶¿ì½º Ä¿¹ö ³ªÅ¸³ª°Ô ÇÏ±â
+            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;            //ì¤ëŠ”ë™ì•ˆ ì´ë™ëª»í•˜ê²Œ ë§‰ê¸°                                
+            Cursor.lockState = CursorLockMode.None;         //ì¤ëŠ”ë™ì•ˆ ë§ˆìš°ìŠ¤ ì»¤ë²„ ë‚˜íƒ€ë‚˜ê²Œ í•˜ê¸°
 
-            for (int rootadd = 0; rootadd < m_rootFullSlotCount; rootadd++)           //·çÆ® ÆĞ³Î¿¡ ¸Â´Â ½½·Ô °³¼ö¸¸Å­ ½½·Ô »ı¼º
+            for (int rootadd = 0; rootadd < m_rootFullSlotCount; rootadd++)           //ë£¨íŠ¸ íŒ¨ë„ì— ë§ëŠ” ìŠ¬ë¡¯ ê°œìˆ˜ë§Œí¼ ìŠ¬ë¡¯ ìƒì„±
             {
                 Debug.Log(SlotCtrl.itemCount);
                 Debug.Log(rootadd);
                 GameObject a_slotobj = Instantiate(m_slotObj);
                 a_slotobj.transform.SetParent(m_rootContent.transform);
-                a_slotobj.transform.localScale = slotSize;                       //SetParent¿¡¼­ ºÒ·¯¿À¸é »çÀÌÁî°¡ ÀÚµ¿Á¶ÀıµÇ¼­ ¼öµ¿À¸·Î ´Ù½Ã 1·Î ¹Ù²ãÁÜ.                
+                a_slotobj.transform.localScale = slotSize;                       //SetParentì—ì„œ ë¶ˆëŸ¬ì˜¤ë©´ ì‚¬ì´ì¦ˆê°€ ìë™ì¡°ì ˆë˜ì„œ ìˆ˜ë™ìœ¼ë¡œ ë‹¤ì‹œ 1ë¡œ ë°”ê¿”ì¤Œ.                
                 SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();
 
-                if (rootadd < PlayerCtrl.inst.m_itemList.Count)                   //ÁÖÀ§¿¡ÀÖ´Â ¾ÆÀÌÅÛ °³¼ö¸¸Å­¸¸ ½ÇÇà
+                if (rootadd < PlayerCtrl.inst.m_itemList.Count)                   //ì£¼ìœ„ì—ìˆëŠ” ì•„ì´í…œ ê°œìˆ˜ë§Œí¼ë§Œ ì‹¤í–‰
                 {
-                    a_slotc.itemImage.sprite = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_iconImg; //µñ¼Å³Ê¸®¿¡¼­ ¾ÆÀÌÅÛ¿¡ ¸Â´Â ÀÌ¹ÌÁö °¡Á®¿È
-                    a_slotc.item = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_itType;      //µñ¼Å³Ê¸®¿¡¼­ ¾ÆÀÌÅÛ¿¡ ¸Â´Â ¾ÆÀÌÅÛ Å¸ÀÔÀ»°¡Á®¿È
+                    a_slotc.itemImage.sprite = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_iconImg; //ë”•ì…”ë„ˆë¦¬ì—ì„œ ì•„ì´í…œì— ë§ëŠ” ì´ë¯¸ì§€ ê°€ì ¸ì˜´
+                    a_slotc.item = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_itType;      //ë”•ì…”ë„ˆë¦¬ì—ì„œ ì•„ì´í…œì— ë§ëŠ” ì•„ì´í…œ íƒ€ì…ì„ê°€ì ¸ì˜´
                     a_slotc.itemImage.GetComponent<RectTransform>().sizeDelta =
                     GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_iconSize
                         * m_rootContent.GetComponent<GridLayoutGroup>().cellSize;
@@ -65,27 +65,27 @@ public class CanvasCtrl : MonoBehaviour
                 }
                     
             }
-            for (int invenadd = 0; invenadd < m_invenFullSlotCount; invenadd++)     //ÀÎº¥Åä¸® ÆĞ³Î¿¡ ¸Â´Â ½½·Ô °³¼ö¸¸Å­ ½½·Ô »ı¼º
+            for (int invenadd = 0; invenadd < m_invenFullSlotCount; invenadd++)     //ì¸ë²¤í† ë¦¬ íŒ¨ë„ì— ë§ëŠ” ìŠ¬ë¡¯ ê°œìˆ˜ë§Œí¼ ìŠ¬ë¡¯ ìƒì„±
             {
                 GameObject b_slotobj = Instantiate(m_slotObj);
                 b_slotobj.transform.SetParent(m_invenContent.transform);
-                b_slotobj.transform.localScale = slotSize;                      //SetParent¿¡¼­ ºÒ·¯¿À¸é »çÀÌÁî°¡ ÀÚµ¿Á¶ÀıµÇ¼­ ¼öµ¿À¸·Î ´Ù½Ã 1·Î ¹Ù²ãÁÜ.
+                b_slotobj.transform.localScale = slotSize;                      //SetParentì—ì„œ ë¶ˆëŸ¬ì˜¤ë©´ ì‚¬ì´ì¦ˆê°€ ìë™ì¡°ì ˆë˜ì„œ ìˆ˜ë™ìœ¼ë¡œ ë‹¤ì‹œ 1ë¡œ ë°”ê¿”ì¤Œ.
                 //SlotCtrl b_slotc = b_slotobj.GetComponent<SlotCtrl>();
             }
         }
 
-        else if (PlayerCtrl.inst.m_isLoot == false)           //Áİ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ³¡
+        else if (PlayerCtrl.inst.m_isLoot == false)           //ì¤ëŠ” ì• ë‹ˆë©”ì´ì…˜ ë
         {
-            for (int i = 0; i < m_rootContent.transform.childCount; i++)        //RootPanel¿¡ µéÀº slot¿ÀºêÁ§Æ® ÀüºÎ »èÁ¦
+            for (int i = 0; i < m_rootContent.transform.childCount; i++)        //RootPanelì— ë“¤ì€ slotì˜¤ë¸Œì íŠ¸ ì „ë¶€ ì‚­ì œ
                 Destroy(m_rootContent.transform.GetChild(i).gameObject);
 
-            for (int j = 0; j < m_invenContent.transform.childCount; j++)       //invenPanel¿¡ µéÀº slot¿ÀºêÁ§Æ® ÀüºÎ »èÁ¦
+            for (int j = 0; j < m_invenContent.transform.childCount; j++)       //invenPanelì— ë“¤ì€ slotì˜¤ë¸Œì íŠ¸ ì „ë¶€ ì‚­ì œ
                 Destroy(m_invenContent.transform.GetChild(j).gameObject);
 
             if (Cursor.lockState == CursorLockMode.None)
-                Cursor.lockState = CursorLockMode.Locked;    //¸¶¿ì½ºÄ¿¼­ ´Ù½Ã Àá±×±â
+                Cursor.lockState = CursorLockMode.Locked;    //ë§ˆìš°ìŠ¤ì»¤ì„œ ë‹¤ì‹œ ì ê·¸ê¸°
         }
-        //else if (Input.GetKeyDown(KeyCode.Escape))            //ÀÌ°Å ¹«½¼ ÄÚµå?
+        //else if (Input.GetKeyDown(KeyCode.Escape))            //ì´ê±° ë¬´ìŠ¨ ì½”ë“œ?
         //{
         //    m_isLoot = false;
         //    PlayerCtrl.inst.m_animController.SetBool("isLoot", m_isLoot);

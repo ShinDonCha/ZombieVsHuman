@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +8,8 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 {
     public Image itemImage;
     public ItemType item;
-    public static int itemCount; // È¹µæÇÑ ¾ÆÀÌÅÛÀÇ °³¼ö
-    public int UniqueitemNum;   // ÀÌ ½½·Ô ¾ÆÀÌÅÛÀÇ ³Ñ¹ö
+    public static int itemCount; // íšë“í•œ ì•„ì´í…œì˜ ê°œìˆ˜
+    public int UniqueitemNum;   // ì´ ìŠ¬ë¡¯ ì•„ì´í…œì˜ ë„˜ë²„
 
     void Awake()
     {
@@ -23,7 +23,7 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         //Debug.Log(UniqueitemNum);
     }
 
-    // ¸¶¿ì½º µå·¡±×°¡ ½ÃÀÛ µÆÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ê°€ ì‹œì‘ ëì„ ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
     public void OnBeginDrag(PointerEventData eventData)
     {          
             DragSlot.instance.dragSlot = this;
@@ -32,7 +32,7 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         
     }
 
-    // ¸¶¿ì½º µå·¡±× ÁßÀÏ ¶§ °è¼Ó ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ ì¤‘ì¼ ë•Œ ê³„ì† ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
     public void OnDrag(PointerEventData eventData)
     {       
             DragSlot.instance.transform.position = eventData.position;
@@ -46,7 +46,7 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         }
     } 
 
-    // ¸¶¿ì½º µå·¡±×°¡ ³¡³µÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ê°€ ëë‚¬ì„ ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
     public void OnEndDrag(PointerEventData eventData)
     {
         
