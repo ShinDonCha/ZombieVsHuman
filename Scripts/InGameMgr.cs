@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,13 +11,13 @@ public class InGameMgr : MonoBehaviour
         QualitySettings.vSyncCount = 0;
 
         GlobalValue.InitData();
-        Cursor.lockState = CursorLockMode.Locked;       //ë§ˆìš°ìŠ¤ ì»¤ì„œë¥¼ ìœˆë„ìš° ì¤‘ì•™ì— ê³ ì •ì‹œí‚¨ í›„ ë³´ì´ì§€ ì•Šê²Œ í•˜ê¸°
+        Cursor.lockState = CursorLockMode.Locked;       //¸¶¿ì½º Ä¿¼­¸¦ À©µµ¿ì Áß¾Ó¿¡ °íÁ¤½ÃÅ² ÈÄ º¸ÀÌÁö ¾Ê°Ô ÇÏ±â
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButton(2))
-            Cursor.lockState = CursorLockMode.None;     //ë§ˆìš°ìŠ¤ ì»¤ì„œ ì ê¸´ê±° í’€ê¸° (í…ŒìŠ¤íŠ¸ í• ë•Œë§Œ ì‚¬ìš© ë‚˜ì¤‘ì— ì‚­ì œ)    
+            Cursor.lockState = CursorLockMode.None;     //¸¶¿ì½º Ä¿¼­ Àá±ä°Å Ç®±â (Å×½ºÆ® ÇÒ¶§¸¸ »ç¿ë ³ªÁß¿¡ »èÁ¦)    
     }
 }

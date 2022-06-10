@@ -1,36 +1,113 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class SlotCtrl : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    public Image m_img;           //ì´ ìŠ¬ë¡¯ì˜ ì°¨ì¼ë“œë¡œ ë¶™ì–´ìˆëŠ” ì´ë¯¸ì§€
+    public Image itemImage;
+    public ItemType item;
+    public static int itemCount; // È¹µæÇÑ ¾ÆÀÌÅÛÀÇ °³¼ö
+    public int UniqueitemNum;   // ÀÌ ½½·Ô ¾ÆÀÌÅÛÀÇ ³Ñ¹ö
 
-    public void OnBeginDrag(PointerEventData eventData)
+    void Awake()
     {
+        itemImage = this.gameObject.GetComponent<Image>();
+        UniqueitemNum = itemCount;
+
+    }
+
+    void Update()
+    {
+        //Debug.Log(UniqueitemNum);
+    }
+
+    // ¸¶¿ì½º µå·¡±×°¡ ½ÃÀÛ µÆÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    public void OnBeginDrag(PointerEventData eventData)
+    {          
+            DragSlot.instance.dragSlot = this;
+            DragSlot.instance.DragSetImage(itemImage);
+            DragSlot.instance.transform.position = eventData.position;
         
     }
 
+    // ¸¶¿ì½º µå·¡±× ÁßÀÏ ¶§ °è¼Ó ¹ß»ıÇÏ´Â ÀÌº¥Æ®
     public void OnDrag(PointerEventData eventData)
-    {
-
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-
+    {       
+            DragSlot.instance.transform.position = eventData.position;
     }
 
     public void OnDrop(PointerEventData eventData)
-    { 
-        
-    }
-
-    // Start is called before the first frame update
-    void Start()
     {
+        if (DragSlot.instance.dragSlot != null)
+        {
+            ChangeSlot();
+        }
+    } 
+
+    // ¸¶¿ì½º µå·¡±×°¡ ³¡³µÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        
+        DragSlot.instance.SetColor(0);
+        DragSlot.instance.dragSlot = null;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+    
+    }
+
+
+    private void ChangeSlot()
+    {
+        ItemType _tempItem = item;        
+        int _tempItemCount = itemCount;
+
+        AddItem(DragSlot.instance.dragSlot.item,DragSlot.instance.dragSlot.UniqueitemNum);
+
+        if ((int)_tempItem > 0 || (int)_tempItem <= (int)ItemType.ItemCount)
+            DragSlot.instance.dragSlot.AddItem(_tempItem);
+        else
+            DragSlot.instance.dragSlot.ClearSlot();
+    }
+
+    public void AddItem(ItemType _item, int _count = 1)
+    {
+        item = _item;
+        itemCount = _count;
+        itemImage.sprite = GlobalValue.g_itemDic[_item].m_iconImg;
+
+        //if (item.itemType != Item.ItemType.Equipment)
+        //{
+        //    go_CountImage.SetActive(true);
+        //    text_Count.text = itemCount.ToString();
+        //}
+        //else
+        //{
+        //    text_Count.text = "0";
+        //    go_CountImage.SetActive(false);
+        //}
+
+        SetColor(1);
+    }
+
+    private void ClearSlot()
+    {
+        item = ItemType.Bat;
+        itemCount = 0;
+        itemImage.sprite = null;
+        SetColor(0);
+
 
     }
+
+    private void SetColor(float _alpha)
+    {
+        Color color = itemImage.color;
+        color.a = _alpha;
+        itemImage.color = color;
+    }
+
 }

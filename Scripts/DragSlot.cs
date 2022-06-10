@@ -28,4 +28,6 @@ public class DragSlot : MonoBehaviour
         color.a = _alpha;
         imageItem.color = color;
     }
+
+
 }

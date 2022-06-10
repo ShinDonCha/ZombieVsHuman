@@ -1,78 +1,85 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TooManyCrosshairs;
 
 public class WeaponCtrl : MonoBehaviour
-{                       
-    [HideInInspector] public GameObject m_crossHair = null;       //instantiateí•œ í¬ë¡œìŠ¤í—¤ì–´ ë‹´ì„ ë³€ìˆ˜
-    private CrosshairCtrl m_crossCtrl = null;       //UICanvasì˜ CrossHairì— ë¶™ì€ CrossHairCtrlìŠ¤í¬ë¦½íŠ¸ë¥¼ ë‹´ì„ ë³€ìˆ˜
+{
+    [HideInInspector] public GameObject m_crossHair = null;       //instantiateÇÑ Å©·Î½ºÇì¾î ´ãÀ» º¯¼ö
+    private CrosshairCtrl m_crossCtrl = null;       //UICanvasÀÇ CrossHair¿¡ ºÙÀº CrossHairCtrl½ºÅ©¸³Æ®¸¦ ´ãÀ» º¯¼ö
 
-    //---- ê³µí†µì ìœ¼ë¡œ í•„ìš”í•œ ë¶€ë¶„
-    [HideInInspector] public ItemType m_weaponType;                
-    
-    private GameObject m_UICanvas = null;   //UICanvas ë‹´ì„ ë³€ìˆ˜
+    //---- °øÅëÀûÀ¸·Î ÇÊ¿äÇÑ ºÎºĞ
+    [HideInInspector] public ItemType m_weaponType;
 
-    //----- ì•„ì´í…œì´ ì´ì¼ ë•Œ í•„ìš”í•œ ë³€ìˆ˜
-    public GameObject m_bulletObj = null;       //ì´ì•Œ ë¦¬ì†ŒìŠ¤ ë‹´ì„ ë³€ìˆ˜
-    public MeshRenderer m_muzzleFlash = null;   //ì´êµ¬ ë¶ˆë¹› ì´í™íŠ¸ì˜ Meshrenderer
-    public Transform m_firePos = null;          //ì´êµ¬ transform ë‹´ì„ ë³€ìˆ˜
-    [HideInInspector] public bool m_zoomInOut = false;           //trueì¼ ë•Œ ì¤Œì¸
-    //----- ì•„ì´í…œì´ ì´ì¼ ë•Œ í•„ìš”í•œ ë³€ìˆ˜
+    private GameObject m_UICanvas = null;   //UICanvas ´ãÀ» º¯¼ö
 
-    private bool m_misFire = false;               //ê³µê²© ë¶ˆê°€ëŠ¥ ìƒíƒœ    
-    private float m_attackDelay = 0.0f;           //ë‹¤ìŒ ê³µê²©ê¹Œì§€ ë”œë ˆì´
-    private float m_shootTimer = 0.0f;            //ê³µê²©ë”œë ˆì´ ê³„ì‚°ìš© ë³€ìˆ˜     
+    //----- ¾ÆÀÌÅÛÀÌ ÃÑÀÏ ¶§ ÇÊ¿äÇÑ º¯¼ö
+    public GameObject m_bulletObj = null;       //ÃÑ¾Ë ¸®¼Ò½º ´ãÀ» º¯¼ö
+    public MeshRenderer m_muzzleFlash = null;   //ÃÑ±¸ ºÒºû ÀÌÆåÆ®ÀÇ Meshrenderer
+    public Transform m_firePos = null;          //ÃÑ±¸ transform ´ãÀ» º¯¼ö
+    [HideInInspector] public bool m_zoomInOut = false;           //trueÀÏ ¶§ ÁÜÀÎ
+    //----- ¾ÆÀÌÅÛÀÌ ÃÑÀÏ ¶§ ÇÊ¿äÇÑ º¯¼ö
 
-    private RaycastHit m_hitInfo;               //ê´‘ì„ ì— ë§ì€ ëŒ€ìƒ
-    Vector3 m_targetPos = Vector3.zero;         //íƒ€ê²©ì ì„ ë‹´ëŠ” ë³€ìˆ˜
-    //---- ê³µí†µì ìœ¼ë¡œ í•„ìš”í•œ ë¶€ë¶„
+    private bool m_misFire = false;               //°ø°İ ºÒ°¡´É »óÅÂ    
+    private float m_attackDelay = 0.0f;           //´ÙÀ½ °ø°İ±îÁö µô·¹ÀÌ
+    private float m_shootTimer = 0.0f;            //°ø°İµô·¹ÀÌ °è»ê¿ë º¯¼ö     
+
+    private RaycastHit m_hitInfo;               //±¤¼±¿¡ ¸ÂÀº ´ë»ó
+    Vector3 m_targetPos = Vector3.zero;         //Å¸°İÁ¡À» ´ã´Â º¯¼ö
+    //---- °øÅëÀûÀ¸·Î ÇÊ¿äÇÑ ºÎºĞ
 
     void Awake()
     {
-        PlayerCtrl.inst.m_nowWeapon = this;           //í˜„ì¬ ì´ ë¬´ê¸°ê°€ í”Œë ˆì´ì–´ê°€ ì°©ìš©í•œ ë¬´ê¸°ì„
+        PlayerCtrl.inst.m_nowWeapon = this;           //ÇöÀç ÀÌ ¹«±â°¡ ÇÃ·¹ÀÌ¾î°¡ Âø¿ëÇÑ ¹«±âÀÓ
     }
 
     // Start is called before the first frame update
     void Start()
-    {        
-        //----- ì–´ë–¤ ë¬´ê¸°ì¸ì§€ì— ë”°ë¼ì„œ íƒ€ì… ë°”ê¿”ì£¼ê¸°
+    {
+        //----- ¾î¶² ¹«±âÀÎÁö¿¡ µû¶ó¼­ Å¸ÀÔ ¹Ù²ãÁÖ±â
         if (this.gameObject.name.Contains("K2c1"))
             m_weaponType = ItemType.K2;
         else if (this.gameObject.name.Contains("M16"))
             m_weaponType = ItemType.M16;
         else if (this.gameObject.name.Contains("Bat"))
             m_weaponType = ItemType.Bat;
-        //----- ì–´ë–¤ ë¬´ê¸°ì¸ì§€ì— ë”°ë¼ì„œ íƒ€ì… ë°”ê¿”ì£¼ê¸°        
+        //----- ¾î¶² ¹«±âÀÎÁö¿¡ µû¶ó¼­ Å¸ÀÔ ¹Ù²ãÁÖ±â        
 
-        m_attackDelay = GlobalValue.g_itemDic[m_weaponType].m_attackDelay;          //ë¬´ê¸°ì˜ ê³µê²© ë”œë ˆì´ ì„¤ì •
+        m_attackDelay = GlobalValue.g_itemDic[m_weaponType].m_attackDelay;          //¹«±âÀÇ °ø°İ µô·¹ÀÌ ¼³Á¤
 
-        if (m_muzzleFlash != null)                       //ì•¼êµ¬ë°©ë§ì´ì¼ ê²½ìš° muzzleFlash ì—†ìŒ
-            m_muzzleFlash.enabled = false;              //ì²˜ìŒì— ì´êµ¬ ë¶ˆë¹› ì´í™íŠ¸ êº¼ì£¼ê¸°        
+        if (m_muzzleFlash != null)                       //¾ß±¸¹æ¸ÁÀÌÀÏ °æ¿ì muzzleFlash ¾øÀ½
+            m_muzzleFlash.enabled = false;              //Ã³À½¿¡ ÃÑ±¸ ºÒºû ÀÌÆåÆ® ²¨ÁÖ±â        
 
-        m_UICanvas = GameObject.Find("UICanvas");                     //Hierarchyì˜ Canvas ì°¾ì•„ì˜¤ê¸°
-        m_crossHair = m_UICanvas.transform.GetChild(0).gameObject;    //UICanvasì˜ CrossHairì˜¤ë¸Œì íŠ¸ ì°¾ì•„ì˜¤ê¸°   
-        m_crossCtrl = m_crossHair.GetComponent<CrosshairCtrl>();      //CrossHairì˜¤ë¸Œì íŠ¸ì˜ ìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°        
-        m_crossCtrl.SetShrinkSpeed(GlobalValue.g_itemDic[m_weaponType].m_shrinkSpeed);  //í¬ë¡œìŠ¤í—¤ì–´ expandingì˜ scale ê°ì†Œ ì†ë„ ì„¤ì •
-        m_crossCtrl.SetReloadSpeed(0.1f);                                               //ì¬ì¥ì „ ì†ë„ ì„¤ì •        
-        m_crossCtrl.m_expandSize = GlobalValue.g_itemDic[m_weaponType].m_expandScale;   //ë°œë‹¹ ì¦ê°€í•˜ëŠ” expandingì˜ scale ì‚¬ì´ì¦ˆ
-        
+        m_UICanvas = GameObject.Find("UICanvas");                     //HierarchyÀÇ Canvas Ã£¾Æ¿À±â
+        m_crossHair = m_UICanvas.transform.GetChild(0).gameObject;    //UICanvasÀÇ CrossHair¿ÀºêÁ§Æ® Ã£¾Æ¿À±â   
+        m_crossCtrl = m_crossHair.GetComponent<CrosshairCtrl>();      //CrossHair¿ÀºêÁ§Æ®ÀÇ ½ºÅ©¸³Æ® °¡Á®¿À±â        
+        m_crossCtrl.SetShrinkSpeed(GlobalValue.g_itemDic[m_weaponType].m_shrinkSpeed);  //Å©·Î½ºÇì¾î expandingÀÇ scale °¨¼Ò ¼Óµµ ¼³Á¤
+        m_crossCtrl.SetReloadSpeed(0.1f);                                               //ÀçÀåÀü ¼Óµµ ¼³Á¤        
+        m_crossCtrl.m_expandSize = GlobalValue.g_itemDic[m_weaponType].m_expandScale;   //¹ß´ç Áõ°¡ÇÏ´Â expandingÀÇ scale »çÀÌÁî
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //---- ê³µê²© ê°€ëŠ¥ ìƒíƒœì¸ì§€ í™•ì¸
+        //---- °ø°İ °¡´É »óÅÂÀÎÁö È®ÀÎ
         if (m_crossCtrl.m_isReloading == true
             || PlayerCtrl.inst.m_animController.GetBool("Roll") == true
             || 5 < PlayerCtrl.inst.m_animController.GetFloat("Speed")
-            || PlayerCtrl.inst.m_isRun == false)        //ì¬ì¥ì „ìƒíƒœë‚˜ êµ¬ë¥´ê¸°ìƒíƒœ, ë›°ê¸°ìƒíƒœ, ì¤ê¸°ìƒíƒœì¼ ê²½ìš° ê³µê²© ë¶ˆê°€
+            || PlayerCtrl.inst.m_isRun == false
+            || PlayerCtrl.inst.m_isLoot == true)        //ÀçÀåÀü»óÅÂ³ª ±¸¸£±â»óÅÂ, ¶Ù±â»óÅÂ, Áİ±â»óÅÂÀÏ °æ¿ì °ø°İ ºÒ°¡ ( Áİ±â»óÅÂÀÏ¶§ ÄÚµåÃß°¡ )
+        {
             m_misFire = true;
+            
+        }
         else
+        {
             m_misFire = false;
-        //---- ê³µê²© ê°€ëŠ¥ ìƒíƒœì¸ì§€ í™•ì¸
+            m_crossHair.SetActive(true);
+        }
+            //---- °ø°İ °¡´É »óÅÂÀÎÁö È®ÀÎ
 
-        //----- ê³µê²©
+        //----- °ø°İ
         if (0.0f < m_shootTimer)
             m_shootTimer -= Time.deltaTime;
         else if (m_shootTimer <= 0.0f)
@@ -80,99 +87,99 @@ public class WeaponCtrl : MonoBehaviour
             m_shootTimer = 0.0f;
             if (Input.GetMouseButton(0) && m_misFire == false)
             {
-                if (m_weaponType == ItemType.Bat)         //ë¬´ê¸°ê°€ ì•¼êµ¬ë°©ë§ì´ì¼ ë•Œ
+                if (m_weaponType == ItemType.Bat)         //¹«±â°¡ ¾ß±¸¹æ¸ÁÀÌÀÏ ¶§
                     Swing();
-                else                                    //ë¬´ê¸°ê°€ ì´ê¸°ë¥˜ì¼ ë•Œ
+                else                                    //¹«±â°¡ ÃÑ±â·ùÀÏ ¶§
                     Fire();
             }
         }
-        //----- ê³µê²©        
+        //----- °ø°İ        
 
-        if (m_weaponType != ItemType.Bat)         //ë¬´ê¸°ê°€ ì´ì¼ ê²½ìš°ë§Œ...
+        if (m_weaponType != ItemType.Bat)         //¹«±â°¡ ÃÑÀÏ °æ¿ì¸¸...
         {
-            CrossHairCon();            
+            CrossHairCon();
 
             if (Input.GetMouseButtonDown(1))
-                m_zoomInOut = !m_zoomInOut;            
+                m_zoomInOut = !m_zoomInOut;
         }
     }
 
-    void Swing()        //ì•¼êµ¬ë°©ë§ì´ë¡œ ê³µê²©í•  ë•Œ
+    void Swing()        //¾ß±¸¹æ¸ÁÀÌ·Î °ø°İÇÒ ¶§
     {
 
     }
 
-    void Fire()         //ì´ê¸°ë¥˜ë¡œ ê³µê²©í•  ë•Œ 
+    void Fire()         //ÃÑ±â·ù·Î °ø°İÇÒ ¶§ 
     {
-        //ì¹´ë©”ë¼ì˜ ì •ë©´ìœ¼ë¡œë¶€í„° 10.0fê±°ë¦¬ì— ê´‘ì„ ì— ë§ëŠ” ëŒ€ìƒì´ ìˆì„ê²½ìš° ê·¸ ëŒ€ìƒì„ íƒ€ê²©ì ìœ¼ë¡œ ì¡ìŒ
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out m_hitInfo, 10.0f))  
+        //Ä«¸Ş¶óÀÇ Á¤¸éÀ¸·ÎºÎÅÍ 10.0f°Å¸®¿¡ ±¤¼±¿¡ ¸Â´Â ´ë»óÀÌ ÀÖÀ»°æ¿ì ±× ´ë»óÀ» Å¸°İÁ¡À¸·Î ÀâÀ½
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out m_hitInfo, 10.0f))
             m_targetPos = m_hitInfo.point;
 
-        //ì—†ì„ ê²½ìš° 10.0fìœ„ì¹˜ë¥¼ íƒ€ê²©ì ìœ¼ë¡œ ì¡ìŒ
+        //¾øÀ» °æ¿ì 10.0fÀ§Ä¡¸¦ Å¸°İÁ¡À¸·Î ÀâÀ½
         else
-            m_targetPos = Camera.main.transform.position + (Camera.main.transform.forward * 10.0f);        
-        
-        float a_RndX = 0.0f;            //ì´ì•Œì´ ë¹—ë‚˜ê°ˆ ê°ë„ë¥¼ ì €ì¥í•  ë³€ìˆ˜
-        float a_RndY = 0.0f;            //ì´ì•Œì´ ë¹—ë‚˜ê°ˆ ê°ë„ë¥¼ ì €ì¥í•  ë³€ìˆ˜
+            m_targetPos = Camera.main.transform.position + (Camera.main.transform.forward * 10.0f);
 
-        float a_RndRange = (m_crossCtrl.m_expanding.transform.localScale.x - 1) * 6; //í˜„ì¬ í¬ë¡œìŠ¤í—¤ì–´ì˜ ëŠ˜ì–´ë‚œ scaleê°’ * 6
-        a_RndX = (int)Random.Range(-a_RndRange, a_RndRange);  //ëŠ˜ì–´ë‚œ scaleê°’ * 6ì˜ ë²”ìœ„
-        a_RndY = (int)Random.Range(-a_RndRange, a_RndRange);  //ëŠ˜ì–´ë‚œ scaleê°’ * 6ì˜ ë²”ìœ„      
+        float a_RndX = 0.0f;            //ÃÑ¾ËÀÌ ºø³ª°¥ °¢µµ¸¦ ÀúÀåÇÒ º¯¼ö
+        float a_RndY = 0.0f;            //ÃÑ¾ËÀÌ ºø³ª°¥ °¢µµ¸¦ ÀúÀåÇÒ º¯¼ö
 
-        GameObject a_bullet = Instantiate(m_bulletObj, m_firePos.position, Quaternion.identity);   //ì´êµ¬ìœ„ì¹˜ì— ì´ì•Œ ìƒì„±
-        a_bullet.transform.LookAt(m_targetPos);     //ì´ì•Œì´ íƒ€ê²Ÿì„ ë°”ë¼ë³´ë„ë¡ ì„¤ì •        
-        Vector3 a_rot = a_bullet.transform.rotation.eulerAngles;        //í˜„ì¬ ì´ì•Œì˜ íšŒì „ê°’ ê°€ì ¸ì˜¤ê¸°
-        a_rot.x += a_RndX;                                              //ì´ì•Œì˜ íšŒì „ê°’ì— ë¹—ë‚˜ê°ˆ ê°ë„ ë”í•˜ê¸°
-        a_rot.y += a_RndY;                                              //ì´ì•Œì˜ íšŒì „ê°’ì— ë¹—ë‚˜ê°ˆ ê°ë„ ë”í•˜ê¸°
+        float a_RndRange = (m_crossCtrl.m_expanding.transform.localScale.x - 1) * 6; //ÇöÀç Å©·Î½ºÇì¾îÀÇ ´Ã¾î³­ scale°ª * 6
+        a_RndX = (int)Random.Range(-a_RndRange, a_RndRange);  //´Ã¾î³­ scale°ª * 6ÀÇ ¹üÀ§
+        a_RndY = (int)Random.Range(-a_RndRange, a_RndRange);  //´Ã¾î³­ scale°ª * 6ÀÇ ¹üÀ§      
+
+        GameObject a_bullet = Instantiate(m_bulletObj, m_firePos.position, Quaternion.identity);   //ÃÑ±¸À§Ä¡¿¡ ÃÑ¾Ë »ı¼º
+        a_bullet.transform.LookAt(m_targetPos);     //ÃÑ¾ËÀÌ Å¸°ÙÀ» ¹Ù¶óº¸µµ·Ï ¼³Á¤        
+        Vector3 a_rot = a_bullet.transform.rotation.eulerAngles;        //ÇöÀç ÃÑ¾ËÀÇ È¸Àü°ª °¡Á®¿À±â
+        a_rot.x += a_RndX;                                              //ÃÑ¾ËÀÇ È¸Àü°ª¿¡ ºø³ª°¥ °¢µµ ´õÇÏ±â
+        a_rot.y += a_RndY;                                              //ÃÑ¾ËÀÇ È¸Àü°ª¿¡ ºø³ª°¥ °¢µµ ´õÇÏ±â
         a_rot.z = 0.0f;
-        a_bullet.transform.rotation = Quaternion.Euler(a_rot);          //ì´ì•Œ ê°ë„ ë³€ê²½
+        a_bullet.transform.rotation = Quaternion.Euler(a_rot);          //ÃÑ¾Ë °¢µµ º¯°æ
 
-        m_crossCtrl.ExpandCrosshair();                       //í¬ë¡œìŠ¤í—¤ì–´ì˜ expanding í™•ì¥
-        StartCoroutine(ShowMuzzleFlash());                   //ì´êµ¬ ë¶ˆë¹› ì´í™íŠ¸ ì¶œë ¥
-        m_shootTimer = m_attackDelay;                        //ë‹¤ìŒ ê³µê²©ê¹Œì§€ì˜ ë”œë ˆì´ ì„¤ì •
+        m_crossCtrl.ExpandCrosshair();                       //Å©·Î½ºÇì¾îÀÇ expanding È®Àå
+        StartCoroutine(ShowMuzzleFlash());                   //ÃÑ±¸ ºÒºû ÀÌÆåÆ® Ãâ·Â
+        m_shootTimer = m_attackDelay;                        //´ÙÀ½ °ø°İ±îÁöÀÇ µô·¹ÀÌ ¼³Á¤
     }
 
     IEnumerator ShowMuzzleFlash()
     {
-        //MuzzleFlashë¥¼ Zì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ ë¶ˆê·œì¹™í•˜ê²Œ íšŒì „
+        //MuzzleFlash¸¦ ZÃàÀ» ±âÁØÀ¸·Î ºÒ±ÔÄ¢ÇÏ°Ô È¸Àü
         Quaternion rot = Quaternion.Euler(-90, 0, Random.Range(0, 360));
         m_muzzleFlash.transform.localRotation = rot;
 
-        //í™œì„±í™”í•´ì„œ ë³´ì´ê²Œ í•¨
+        //È°¼ºÈ­ÇØ¼­ º¸ÀÌ°Ô ÇÔ
         m_muzzleFlash.enabled = true;
 
-        //ë¶ˆê·œì¹™ì ì¸ ì‹œê°„ ë™ì•ˆ Delayí•œ ë‹¤ìŒ MeshRendererë¥¼ ë¹„í™œì„±í™”
+        //ºÒ±ÔÄ¢ÀûÀÎ ½Ã°£ µ¿¾È DelayÇÑ ´ÙÀ½ MeshRenderer¸¦ ºñÈ°¼ºÈ­
         yield return new WaitForSeconds(Random.Range(0.01f, 0.03f));
 
-        //ë¹„í™œì„±í™”í•´ì„œ ë³´ì´ì§€ ì•Šê²Œ í•¨
+        //ºñÈ°¼ºÈ­ÇØ¼­ º¸ÀÌÁö ¾Ê°Ô ÇÔ
         m_muzzleFlash.enabled = false;
     }
 
     void CrossHairCon()
-    {       
-        if (m_zoomInOut == true)             //ì¤Œì¸ ìƒíƒœ        
-            m_crossCtrl.SetMaxScale(1.3f);   //í¬ë¡œìŠ¤í—¤ì–´ expandingì˜ ìµœëŒ€ scale ì„¤ì •
+    {
+        if (m_zoomInOut == true)             //ÁÜÀÎ »óÅÂ        
+            m_crossCtrl.SetMaxScale(1.3f);   //Å©·Î½ºÇì¾î expandingÀÇ ÃÖ´ë scale ¼³Á¤
 
-        else                                //ì¤Œì•„ì›ƒ ìƒíƒœ        
-            m_crossCtrl.SetMaxScale(GlobalValue.g_itemDic[m_weaponType].m_maxScale); //í¬ë¡œìŠ¤í—¤ì–´ expandingì˜ ìµœëŒ€ scale ì„¤ì •
+        else                                //ÁÜ¾Æ¿ô »óÅÂ        
+            m_crossCtrl.SetMaxScale(GlobalValue.g_itemDic[m_weaponType].m_maxScale); //Å©·Î½ºÇì¾î expandingÀÇ ÃÖ´ë scale ¼³Á¤
 
-        if (Input.GetKeyDown(KeyCode.R))     //ì¬ì¥ì „        
+        if (Input.GetKeyDown(KeyCode.R))     //ÀçÀåÀü        
             m_crossCtrl.DoReload();
 
-        if (PlayerCtrl.inst.m_animController.GetBool("Roll") == true)            //í”Œë ˆì´ì–´ê°€ êµ¬ë¥´ê¸°ë¥¼ í•˜ë©´
+        if (PlayerCtrl.inst.m_animController.GetBool("Roll") == true)            //ÇÃ·¹ÀÌ¾î°¡ ±¸¸£±â¸¦ ÇÏ¸é
         {
-            m_crossCtrl.m_expanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale;      //expandingì˜ scaleì„ maxScale ê°’ìœ¼ë¡œ
-            StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expandingì˜ scale ê°ì†Œ ì½”ë£¨í‹´ ì‹œì‘
-            StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expandingì˜ scale ê°ì†Œ ì½”ë£¨í‹´ ì •ì§€
+            m_crossCtrl.m_expanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale;      //expandingÀÇ scaleÀ» maxScale °ªÀ¸·Î
+            StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expandingÀÇ scale °¨¼Ò ÄÚ·çÆ¾ ½ÃÀÛ
+            StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expandingÀÇ scale °¨¼Ò ÄÚ·çÆ¾ Á¤Áö
 
         }
-        //ë›¸ ë•Œ ì´ë™ì†ë„ë„ í”Œë ˆì´ì–´ ì»¨íŠ¸ë¡¤ìŠ¤í¬ë¦½íŠ¸ ë³€ìˆ˜ë¥¼ ê°€ì ¸ì™€ ìˆ˜ì •.
+        //¶Û ¶§ ÀÌµ¿¼Óµµµµ ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ½ºÅ©¸³Æ® º¯¼ö¸¦ °¡Á®¿Í ¼öÁ¤.
         //else if (5 < PlayerCtrl.inst.m_animController.GetFloat("Speed") &&
-        //        m_crossCtrl.m_expanding.rectTransform.localScale.x < m_crossCtrl.m_crosshairMaxScale.x * 1.2f)  //í”Œë ˆì´ì–´ê°€ ë›°ê³  ìˆë‹¤ë©´
+        //        m_crossCtrl.m_expanding.rectTransform.localScale.x < m_crossCtrl.m_crosshairMaxScale.x * 1.2f)  //ÇÃ·¹ÀÌ¾î°¡ ¶Ù°í ÀÖ´Ù¸é
         //{
-        //    m_crossCtrl.m_expanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale * 1.2f;      //expandingì˜ scaleì„ 1.3ìœ¼ë¡œ          
-        //    StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expandingì˜ scale ê°ì†Œ ì½”ë£¨í‹´ ì‹œì‘
-        //    StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expandingì˜ scale ê°ì†Œ ì½”ë£¨í‹´ ì •ì§€
+        //    m_crossCtrl.m_expanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale * 1.2f;      //expandingÀÇ scaleÀ» 1.3À¸·Î          
+        //    StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expandingÀÇ scale °¨¼Ò ÄÚ·çÆ¾ ½ÃÀÛ
+        //    StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expandingÀÇ scale °¨¼Ò ÄÚ·çÆ¾ Á¤Áö
         //}
-    }    
+    }
 }
