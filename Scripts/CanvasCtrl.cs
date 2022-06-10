@@ -37,7 +37,8 @@ public class CanvasCtrl : MonoBehaviour
 
         if (PlayerCtrl.inst.m_isLoot == true)                //줍는 애니메이션을 하고있음
         {
-            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;            //줍는동안 이동못하게 막기                                
+            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;   //줍는동안 이동못하게 막기                                
+            Cursor.lockState = CursorLockMode.None;         //줍는동안 마우스 커버 나타나게 하기
 
             for (int i = 0; i < m_slotCount; i++)           //슬롯 개수만큼 슬롯 생성
             {
@@ -46,7 +47,14 @@ public class CanvasCtrl : MonoBehaviour
                 SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();
 
                 if (i < PlayerCtrl.inst.m_itemList.Count)                   //주위에있는 아이템 개수만큼만 실행
+                {
                     a_slotc.m_img.sprite = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[i].m_itemType].m_iconImg;
+
+                    //설정된 셀사이즈에 비례한 아이템 사이즈에 맞게 이미지 크기 변경 
+                    a_slotc.m_img.GetComponent<RectTransform>().sizeDelta =
+                        GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[i].m_itemType].m_iconSize
+                                            * m_rootContent.GetComponent<GridLayoutGroup>().cellSize;                    
+                }
                 //딕셔너리에서 아이템에 맞는 이미지 가져옴
             }
         }
@@ -55,6 +63,9 @@ public class CanvasCtrl : MonoBehaviour
         {
             for (int i = 0; i < m_rootContent.transform.childCount; i++)        //Content에 들은 slot오브젝트 전부 삭제
                 Destroy(m_rootContent.transform.GetChild(i).gameObject);
+
+            if (Cursor.lockState == CursorLockMode.None)
+                Cursor.lockState = CursorLockMode.Locked;    //마우스커서 다시 잠그기
         }
         //else if (Input.GetKeyDown(KeyCode.Escape))            //이거 무슨 코드?
         //{

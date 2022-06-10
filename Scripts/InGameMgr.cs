@@ -11,11 +11,13 @@ public class InGameMgr : MonoBehaviour
         QualitySettings.vSyncCount = 0;
 
         GlobalValue.InitData();
+        Cursor.lockState = CursorLockMode.Locked;       //마우스 커서를 윈도우 중앙에 고정시킨 후 보이지 않게 하기
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButton(2))
+            Cursor.lockState = CursorLockMode.None;     //마우스 커서 잠긴거 풀기 (테스트 할때만 사용 나중에 삭제)    
     }
 }

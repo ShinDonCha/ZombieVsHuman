@@ -17,7 +17,7 @@ public class ItemCtrl : MonoBehaviour
         a_go.transform.SetParent(transform, false);             //Item오브젝트의 차일드로 붙이기
 
         //----- 어떤 아이템인지에 따라서 타입 바꿔주기
-        if (a_go.name.Contains("K2c1"))
+        if (a_go.name.Contains("K2"))
             m_itemType = ItemType.K2;
         else if (a_go.name.Contains("M16"))
             m_itemType = ItemType.M16;

@@ -37,21 +37,21 @@ public class ItemInfo  //각 Item 정보
         if (itemType == ItemType.Bat)
         {
             m_name = "야구방망이";
-            m_iconSize.x = 0.766f;   //세로에 대한 가로 비율
-            m_iconSize.y = 1.0f;     //세로를 기준으로 잡을 것이기 때문에 그냥 1.0f = 103 픽셀
+            m_iconSize.x = 0.85f;   //Content의 cell크기 0.85배
+            m_iconSize.y = 1.0f;     //Content의 cell크기
             m_damage = 20;
             m_duration = 200;
             m_attackDelay = 0.5f;          //공격 딜레이
             m_isHave = false;
             m_itemEx = "쓰임에 따라 스포츠가 될지 , 느와르물이 될지 정해진다. 지금은 후자일지도..";
 
-            m_iconImg = Resources.Load("Bat", typeof(Sprite)) as Sprite;
+            m_iconImg = Resources.Load("Weapons/Bat", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.M16)
         {
             m_name = "M16";
-            m_iconSize.x = 0.81f;    //세로에 대한 가로 비율
-            m_iconSize.y = 1.0f;     //세로를 기준으로 잡을 것이기 때문에 그냥 1.0f
+            m_iconSize.x = 0.9f;    //Content의 cell크기 0.9배
+            m_iconSize.y = 0.8f;     //Content의 cell크기 0.8배
             m_damage = 30;
             m_maganize = 20;
             m_expandScale = 0.12f;         //발당 늘어나는 십자선 크기
@@ -60,13 +60,13 @@ public class ItemInfo  //각 Item 정보
             m_attackDelay = 0.1f;          //공격 딜레이
             m_isHave = false;
             m_itemEx = "예비군 아저씨들의 상징과도 같은 무기, 명중률.. 생각보다 뛰어나다!";
-            m_iconImg = Resources.Load("m16", typeof(Sprite)) as Sprite;
+            m_iconImg = Resources.Load("Weapons/M16", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.K2)
         {
             m_name = "K2";
-            m_iconSize.x = 0.81f;    //세로에 대한 가로 비율
-            m_iconSize.y = 1.0f;     //세로를 기준으로 잡을 것이기 때문에 그냥 1.0f
+            m_iconSize.x = 1.0f;    //Content의 cell크기
+            m_iconSize.y = 0.7f;     //Content의 cell크기 0.7배
             m_damage = 30;
             m_maganize = 30;
             m_expandScale = 0.15f;         //발당 늘어나는 십자선 크기
@@ -76,13 +76,13 @@ public class ItemInfo  //각 Item 정보
             m_isHave = false;
 
             m_itemEx = "현역들의 상징이자 못다루는 한국남자가 없을 정도, 근데 목숨처럼 소중한 이 무기가 왜 떨어져있지?";
-            m_iconImg = Resources.Load("k2", typeof(Sprite)) as Sprite;
+            m_iconImg = Resources.Load("Weapons/K2", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.Ak47)
         {
             m_name = "AK47";
-            m_iconSize.x = 0.946f;     //세로에 대한 가로 비율
-            m_iconSize.y = 1.0f;     //세로를 기준으로 잡을 것이기 때문에 그냥 1.0f
+            m_iconSize.x = 0.946f;     //미정
+            m_iconSize.y = 1.0f;     //미정
             m_damage = 40;
             m_maganize = 30;
             m_expandScale = 0.28f;         //발당 늘어나는 십자선 크기
@@ -97,8 +97,8 @@ public class ItemInfo  //각 Item 정보
         else if (itemType == ItemType.SniperRifle)
         {
             m_name = "SniperRifle";
-            m_iconSize.x = 0.93f;     //세로에 대한 가로 비율
-            m_iconSize.y = 1.0f;     //세로를 기준으로 잡을 것이기 때문에 그냥 1.0f
+            m_iconSize.x = 0.93f;     //미정
+            m_iconSize.y = 1.0f;     //미정
             m_damage = 150;
             m_maganize = 5;
             m_attackDelay = 0.0f;          //공격 딜레이
