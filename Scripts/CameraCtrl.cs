@@ -1,28 +1,28 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraCtrl : MonoBehaviour
 {
-    private GameObject m_player = null;             //ÇÃ·¹ÀÌ¾î ÀúÀå ÇÒ º¯¼ö
+    private GameObject m_player = null;             //í”Œë ˆì´ì–´ ì €ì¥ í•  ë³€ìˆ˜
 
-    //---- È¸Àü°ª °è»ê
-    private Vector3 m_basicPos = Vector3.zero;      //ÇÃ·¹ÀÌ¾î¿¡°Ô Àû¿ëÇÏ±â Àü¿¡ ÁÜ °ª¸¸ Àû¿ëÇÑ Ä«¸Ş¶ó À§Ä¡
-    private Vector3 m_changedRot = Vector3.zero;    //º¯°æ µÈ È¸Àü°ª
-    private Vector3 m_targetPos = Vector3.zero;     //Ä«¸Ş¶ó°¡ ¹Ù¶óº¼ À§Ä¡
-    private Quaternion m_calcRot;                   //º¯°æ µÈ È¸Àü°ª(vector3)À» QuaternionÀ¸·Î º¯°æÇØ¼­ ´ã´Â º¯¼ö
-    private float m_rotSpeed = 50.0f;               //È¸Àü°ª º¯°æ ¼Óµµ
-    //private float m_startRotx = 10.0f;           //Ã³À½¿¡ ¼³Á¤ÇÏ´Â Ä«¸Ş¶ó rotation x °ª
-    //---- È¸Àü°ª °è»ê
+    //---- íšŒì „ê°’ ê³„ì‚°
+    private Vector3 m_basicPos = Vector3.zero;      //í”Œë ˆì´ì–´ì—ê²Œ ì ìš©í•˜ê¸° ì „ì— ì¤Œ ê°’ë§Œ ì ìš©í•œ ì¹´ë©”ë¼ ìœ„ì¹˜
+    private Vector3 m_changedRot = Vector3.zero;    //ë³€ê²½ ëœ íšŒì „ê°’
+    private Vector3 m_targetPos = Vector3.zero;     //ì¹´ë©”ë¼ê°€ ë°”ë¼ë³¼ ìœ„ì¹˜
+    private Quaternion m_calcRot;                   //ë³€ê²½ ëœ íšŒì „ê°’(vector3)ì„ Quaternionìœ¼ë¡œ ë³€ê²½í•´ì„œ ë‹´ëŠ” ë³€ìˆ˜
+    private float m_rotSpeed = 50.0f;               //íšŒì „ê°’ ë³€ê²½ ì†ë„
+    //private float m_startRotx = 10.0f;           //ì²˜ìŒì— ì„¤ì •í•˜ëŠ” ì¹´ë©”ë¼ rotation x ê°’
+    //---- íšŒì „ê°’ ê³„ì‚°
     
-    private float m_zoomDistance = 0.0f;      //ÇÃ·¹ÀÌ¾î¿Í Ä«¸Ş¶ó »çÀÌÀÇ °Å¸®       
-    private float m_maxX = 60.0f;           //Ä«¸Ş¶ó À§¾Æ·¡ ÃÖ´ë rotation°ª
+    private float m_zoomDistance = 0.0f;      //í”Œë ˆì´ì–´ì™€ ì¹´ë©”ë¼ ì‚¬ì´ì˜ ê±°ë¦¬       
+    private float m_maxX = 60.0f;           //ì¹´ë©”ë¼ ìœ„ì•„ë˜ ìµœëŒ€ rotationê°’
     
 
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;       //¸¶¿ì½º Ä¿¼­¸¦ À©µµ¿ì Áß¾Ó¿¡ °íÁ¤½ÃÅ² ÈÄ º¸ÀÌÁö ¾Ê°Ô ÇÏ±â
+        Cursor.lockState = CursorLockMode.Locked;       //ë§ˆìš°ìŠ¤ ì»¤ì„œë¥¼ ìœˆë„ìš° ì¤‘ì•™ì— ê³ ì •ì‹œí‚¨ í›„ ë³´ì´ì§€ ì•Šê²Œ í•˜ê¸°
         m_player = GameObject.Find("Player");
         //m_player = transform.parent.gameObject;
 
@@ -34,21 +34,21 @@ public class CameraCtrl : MonoBehaviour
     void Update()
     {        
         if (Input.GetMouseButton(2))
-            Cursor.lockState = CursorLockMode.None;     //¸¶¿ì½º Ä¿¼­ Àá±ä°Å Ç®±â (Å×½ºÆ® ÇÒ¶§¸¸ »ç¿ë ³ªÁß¿¡ »èÁ¦)      
+            Cursor.lockState = CursorLockMode.None;     //ë§ˆìš°ìŠ¤ ì»¤ì„œ ì ê¸´ê±° í’€ê¸° (í…ŒìŠ¤íŠ¸ í• ë•Œë§Œ ì‚¬ìš© ë‚˜ì¤‘ì— ì‚­ì œ)      
 
-        //------- Ä«¸Ş¶ó È¸Àü
+        //------- ì¹´ë©”ë¼ íšŒì „
         m_targetPos = m_player.transform.position;
         m_targetPos.y += 2.8f;              
         
         m_changedRot.y += Input.GetAxis("Mouse X") * m_rotSpeed * Time.deltaTime;
         m_changedRot.x -= Input.GetAxis("Mouse Y") * m_rotSpeed * Time.deltaTime;
 
-        if (m_maxX < m_changedRot.x)         //Ä«¸Ş¶ó À§¾Æ·¡ °¢µµ Á¦ÇÑ
+        if (m_maxX < m_changedRot.x)         //ì¹´ë©”ë¼ ìœ„ì•„ë˜ ê°ë„ ì œí•œ
             m_changedRot.x = m_maxX;
         if (m_changedRot.x < -m_maxX)
             m_changedRot.x = -m_maxX;
 
-        m_zoomDistance = 2 + Mathf.Sin((m_changedRot.x / (m_maxX * 2)) * Mathf.PI);     //Ä«¸Ş¶ó¿Í Å¸°ÙÀÇ °Å¸® 1 ~ 3      
+        m_zoomDistance = 2 + Mathf.Sin((m_changedRot.x / (m_maxX * 2)) * Mathf.PI);     //ì¹´ë©”ë¼ì™€ íƒ€ê²Ÿì˜ ê±°ë¦¬ 1 ~ 3      
 
         m_basicPos.x = 0.0f;
         m_basicPos.y = 0.0f;
@@ -56,12 +56,12 @@ public class CameraCtrl : MonoBehaviour
         m_calcRot = Quaternion.Euler(m_changedRot.x, m_changedRot.y, 0);
         transform.position = m_calcRot * m_basicPos + m_targetPos;
         transform.LookAt(m_targetPos);
-        //------- Ä«¸Ş¶ó È¸Àü
+        //------- ì¹´ë©”ë¼ íšŒì „
 
-        //------- ÇÃ·¹ÀÌ¾î È¸Àü        
+        //------- í”Œë ˆì´ì–´ íšŒì „        
         Vector3 a_CamForward = transform.forward;
         a_CamForward.y = 0.0f;
         m_player.transform.forward = a_CamForward;        
-        //------- ÇÃ·¹ÀÌ¾î È¸Àü
+        //------- í”Œë ˆì´ì–´ íšŒì „
     }
 }

@@ -1,15 +1,15 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CanvasCtrl : MonoBehaviour
 {
-    public Text m_explainMessage;                   //"FÅ°¸¦ ´©¸£¸é ¾ÆÀÌÅÛÀ» ÁÖ¿ï ¼ö ÀÖ½À´Ï´Ù." ÅØ½ºÆ®
-    public GameObject m_invenPanel;                 //ÀÎº¥Åä¸® ÆÇ³Ú ´ã´Â º¯¼ö
-    public GameObject m_rootContent = null;         //CanvasÀÇ Scroll RectÀÇ Content
-    public GameObject m_slotObj = null;             //slot °ÔÀÓ¿ÀºêÁ§Æ®      
-    private int m_slotCount = 12;                   //Content¿¡ ³Ö¾îÁÙ ½½·Ô °³¼ö
+    public Text m_explainMessage;                   //"Fí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì•„ì´í…œì„ ì£¼ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤." í…ìŠ¤íŠ¸
+    public GameObject m_invenPanel;                 //ì¸ë²¤í† ë¦¬ íŒë„¬ ë‹´ëŠ” ë³€ìˆ˜
+    public GameObject m_rootContent = null;         //Canvasì˜ Scroll Rectì˜ Content
+    public GameObject m_slotObj = null;             //slot ê²Œì„ì˜¤ë¸Œì íŠ¸      
+    private int m_slotCount = 12;                   //Contentì— ë„£ì–´ì¤„ ìŠ¬ë¡¯ ê°œìˆ˜
 
     // Start is called before the first frame update
     void Start()
@@ -20,10 +20,10 @@ public class CanvasCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ExplainMsg();   //"FÅ° ~" ¸Ş½ÃÁö Ãâ·ÂÁ¶Àı ÇÔ¼ö                
+        ExplainMsg();   //"Fí‚¤ ~" ë©”ì‹œì§€ ì¶œë ¥ì¡°ì ˆ í•¨ìˆ˜                
     }
 
-    void ExplainMsg()   //¾ÆÀÌÅÛ Áİ±â Å° Ç¥½Ã
+    void ExplainMsg()   //ì•„ì´í…œ ì¤ê¸° í‚¤ í‘œì‹œ
     {
         if (PlayerCtrl.inst.m_itemList.Count <= 0)
             m_explainMessage.gameObject.SetActive(false);
@@ -33,30 +33,30 @@ public class CanvasCtrl : MonoBehaviour
 
     public void InvenPanel()
     {
-        m_invenPanel.SetActive(PlayerCtrl.inst.m_isLoot);       //ÆÇ³Ú º¸ÀÌ±â, ¾Èº¸ÀÌ±â
+        m_invenPanel.SetActive(PlayerCtrl.inst.m_isLoot);       //íŒë„¬ ë³´ì´ê¸°, ì•ˆë³´ì´ê¸°
 
-        if (PlayerCtrl.inst.m_isLoot == true)                //Áİ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ÇÏ°íÀÖÀ½
+        if (PlayerCtrl.inst.m_isLoot == true)                //ì¤ëŠ” ì• ë‹ˆë©”ì´ì…˜ì„ í•˜ê³ ìˆìŒ
         {
-            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;            //Áİ´Âµ¿¾È ÀÌµ¿¸øÇÏ°Ô ¸·±â                                
+            PlayerCtrl.inst.m_isRun = !PlayerCtrl.inst.m_isLoot;            //ì¤ëŠ”ë™ì•ˆ ì´ë™ëª»í•˜ê²Œ ë§‰ê¸°                                
 
-            for (int i = 0; i < m_slotCount; i++)           //½½·Ô °³¼ö¸¸Å­ ½½·Ô »ı¼º
+            for (int i = 0; i < m_slotCount; i++)           //ìŠ¬ë¡¯ ê°œìˆ˜ë§Œí¼ ìŠ¬ë¡¯ ìƒì„±
             {
                 GameObject a_slotobj = Instantiate(m_slotObj);
                 a_slotobj.transform.SetParent(m_rootContent.transform);
                 SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();
 
-                if (i < PlayerCtrl.inst.m_itemList.Count)                   //ÁÖÀ§¿¡ÀÖ´Â ¾ÆÀÌÅÛ °³¼ö¸¸Å­¸¸ ½ÇÇà
+                if (i < PlayerCtrl.inst.m_itemList.Count)                   //ì£¼ìœ„ì—ìˆëŠ” ì•„ì´í…œ ê°œìˆ˜ë§Œí¼ë§Œ ì‹¤í–‰
                     a_slotc.m_img.sprite = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[i].m_itemType].m_iconImg;
-                //µñ¼Å³Ê¸®¿¡¼­ ¾ÆÀÌÅÛ¿¡ ¸Â´Â ÀÌ¹ÌÁö °¡Á®¿È
+                //ë”•ì…”ë„ˆë¦¬ì—ì„œ ì•„ì´í…œì— ë§ëŠ” ì´ë¯¸ì§€ ê°€ì ¸ì˜´
             }
         }
 
-        else if (PlayerCtrl.inst.m_isLoot == false)           //Áİ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ³¡
+        else if (PlayerCtrl.inst.m_isLoot == false)           //ì¤ëŠ” ì• ë‹ˆë©”ì´ì…˜ ë
         {
-            for (int i = 0; i < m_rootContent.transform.childCount; i++)        //Content¿¡ µéÀº slot¿ÀºêÁ§Æ® ÀüºÎ »èÁ¦
+            for (int i = 0; i < m_rootContent.transform.childCount; i++)        //Contentì— ë“¤ì€ slotì˜¤ë¸Œì íŠ¸ ì „ë¶€ ì‚­ì œ
                 Destroy(m_rootContent.transform.GetChild(i).gameObject);
         }
-        //else if (Input.GetKeyDown(KeyCode.Escape))            //ÀÌ°Å ¹«½¼ ÄÚµå?
+        //else if (Input.GetKeyDown(KeyCode.Escape))            //ì´ê±° ë¬´ìŠ¨ ì½”ë“œ?
         //{
         //    m_isLoot = false;
         //    PlayerCtrl.inst.m_animController.SetBool("isLoot", m_isLoot);

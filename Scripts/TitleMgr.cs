@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,32 +11,32 @@ using SimpleJSON;
 public class TitleMgr : MonoBehaviour
 {
     [Header("LogInPanel")]
-    public GameObject m_logInPanel = null;              //·Î±×ÀÎ ÆÇ³Ú ¿ÀºêÁ§Æ®¸¦ ´ãÀ» º¯¼ö
-    public InputField m_id_InputField = null;           //·Î±×ÀÎ ÆÇ³ÚÀÇ id inputfield
-    public InputField m_pw_InputField = null;           //·Î±×ÀÎ ÆÇ³ÚÀÇ pw inputfield
-    public Button m_logIn_Btn = null;                   //·Î±×ÀÎ ¹öÆ°
-    public Button m_signUp_Btn = null;                  //È¸¿ø°¡ÀÔ ¹öÆ°
+    public GameObject m_logInPanel = null;              //ë¡œê·¸ì¸ íŒë„¬ ì˜¤ë¸Œì íŠ¸ë¥¼ ë‹´ì„ ë³€ìˆ˜
+    public InputField m_id_InputField = null;           //ë¡œê·¸ì¸ íŒë„¬ì˜ id inputfield
+    public InputField m_pw_InputField = null;           //ë¡œê·¸ì¸ íŒë„¬ì˜ pw inputfield
+    public Button m_logIn_Btn = null;                   //ë¡œê·¸ì¸ ë²„íŠ¼
+    public Button m_signUp_Btn = null;                  //íšŒì›ê°€ì… ë²„íŠ¼
 
     [Header("SignUpPanel")]
-    public GameObject m_signUpPanel = null;             //È¸¿ø°¡ÀÔ ÆÇ³Ú ¿ÀºêÁ§Æ®¸¦ ´ãÀ» º¯¼ö
-    public InputField m_newid_InputField = null;        //È¸¿ø°¡ÀÔ ÆÇ³ÚÀÇ new id inputfield
-    public InputField m_newpw_InputField = null;        //È¸¿ø°¡ÀÔ ÆÇ³ÚÀÇ new pw inputfield
-    public InputField m_newnick_InputField = null;      //È¸¿ø°¡ÀÔ ÆÇ³ÚÀÇ new nick inputfield
-    public Button m_create_Btn = null;                  //create ¹öÆ°
-    public Button m_cancel_Btn = null;                  //Ãë¼Ò ¹öÆ°
+    public GameObject m_signUpPanel = null;             //íšŒì›ê°€ì… íŒë„¬ ì˜¤ë¸Œì íŠ¸ë¥¼ ë‹´ì„ ë³€ìˆ˜
+    public InputField m_newid_InputField = null;        //íšŒì›ê°€ì… íŒë„¬ì˜ new id inputfield
+    public InputField m_newpw_InputField = null;        //íšŒì›ê°€ì… íŒë„¬ì˜ new pw inputfield
+    public InputField m_newnick_InputField = null;      //íšŒì›ê°€ì… íŒë„¬ì˜ new nick inputfield
+    public Button m_create_Btn = null;                  //create ë²„íŠ¼
+    public Button m_cancel_Btn = null;                  //ì·¨ì†Œ ë²„íŠ¼
 
     [Header("Message")]
-    public Text m_messageText = null;                   //¸Ş¼¼Áö¸¦ º¸¿©ÁÖ±â À§ÇÑ ÅØ½ºÆ®
-    private float m_msTimer = 0.0f;                     //¸Ş¼¼Áö Áö¼Ó Å¸ÀÌ¸Ó
+    public Text m_messageText = null;                   //ë©”ì„¸ì§€ë¥¼ ë³´ì—¬ì£¼ê¸° ìœ„í•œ í…ìŠ¤íŠ¸
+    private float m_msTimer = 0.0f;                     //ë©”ì„¸ì§€ ì§€ì† íƒ€ì´ë¨¸
 
-    string m_logInUrl;                                  //´åÈ¨ÀÇ ·Î±×ÀÎ php url
-    string m_signUpUrl;                                 //´åÈ¨ÀÇ È¸¿ø°¡ÀÔ php url
+    string m_logInUrl;                                  //ë‹·í™ˆì˜ ë¡œê·¸ì¸ php url
+    string m_signUpUrl;                                 //ë‹·í™ˆì˜ íšŒì›ê°€ì… php url
 
 
     // Start is called before the first frame update
     void Start()
     {
-        m_id_InputField.Select();                       //Ã³À½¿¡ ·Î±×ÀÎ ÆÇ³Ú id inputfield¿¡ Ä¿¼­ ³õ±â
+        m_id_InputField.Select();                       //ì²˜ìŒì— ë¡œê·¸ì¸ íŒë„¬ id inputfieldì— ì»¤ì„œ ë†“ê¸°
 
         if (m_logIn_Btn != null)
             m_logIn_Btn.onClick.AddListener(LogIn);        
@@ -57,21 +57,21 @@ public class TitleMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {        
-        if (0.0f < m_msTimer)                   //¸Ş¼¼Áö Ãâ·Â, »èÁ¦
+        if (0.0f < m_msTimer)                   //ë©”ì„¸ì§€ ì¶œë ¥, ì‚­ì œ
         {
             m_msTimer -= Time.deltaTime;
             if (m_msTimer < 0.0f)            
                 MessageOnOff("", false);                           
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab) ||        //tabÅ°, enterÅ°·Î Ä¿¼­ ¿Å±â±â
+        if (Input.GetKeyDown(KeyCode.Tab) ||        //tabí‚¤, enterí‚¤ë¡œ ì»¤ì„œ ì˜®ê¸°ê¸°
             (Input.GetKeyDown(KeyCode.Return) && !EventSystem.current.currentSelectedGameObject.name.Contains("Btn")))
         {            
-            Selectable nextSelect = EventSystem.current.currentSelectedGameObject.          //ÇöÀç ¼±ÅÃµÇ¾îÀÖ´Â °ÔÀÓ¿ÀºêÁ§Æ®ÀÇ Select On Down ºÎºĞ °¡Á®¿À±â
+            Selectable nextSelect = EventSystem.current.currentSelectedGameObject.          //í˜„ì¬ ì„ íƒë˜ì–´ìˆëŠ” ê²Œì„ì˜¤ë¸Œì íŠ¸ì˜ Select On Down ë¶€ë¶„ ê°€ì ¸ì˜¤ê¸°
                                     GetComponent<Selectable>().FindSelectableOnDown();
 
             if (nextSelect != null)            
-                nextSelect.Select();         //Select On Down¿¡ µî·ÏµÈ ¿ÀºêÁ§Æ® ¼±ÅÃÇÏ±â
+                nextSelect.Select();         //Select On Downì— ë“±ë¡ëœ ì˜¤ë¸Œì íŠ¸ ì„ íƒí•˜ê¸°
         }
     }
 
@@ -82,19 +82,19 @@ public class TitleMgr : MonoBehaviour
 
         if(a_idStr == "" || a_pwStr == "")
         {
-            MessageOnOff("ID¿Í PW¸¦ ºóÄ­¾øÀÌ ÀÔ·ÂÇØ¾ß ÇÕ´Ï´Ù.");
+            MessageOnOff("IDì™€ PWë¥¼ ë¹ˆì¹¸ì—†ì´ ì…ë ¥í•´ì•¼ í•©ë‹ˆë‹¤.");
             return;
         }
 
         if(!(3 <= a_idStr.Length && a_idStr.Length <= 10))
         {
-            MessageOnOff("ID´Â 3±ÛÀÚ ÀÌ»ó 10±ÛÀÚ ÀÌÇÏ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            MessageOnOff("IDëŠ” 3ê¸€ì ì´ìƒ 10ê¸€ì ì´í•˜ë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
         if(!(4 <= a_pwStr.Length && a_pwStr.Length <= 15))
         {
-            MessageOnOff("PW´Â 4±ÛÀÚ ÀÌ»ó 15±ÛÀÚ ÀÌÇÏ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            MessageOnOff("PWëŠ” 4ê¸€ì ì´ìƒ 15ê¸€ì ì´í•˜ë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
@@ -117,7 +117,7 @@ public class TitleMgr : MonoBehaviour
             System.Text.Encoding enc = System.Text.Encoding.UTF8;
             string sz = enc.GetString(wRequest.downloadHandler.data);
 
-            if (!sz.Contains("Login-Success!!") || !sz.Contains("{\""))      //·Î±×ÀÎ¿¡ ½ÇÆĞÇß°Å³ª JSONÇü½ÄÀÌ ¾Æ´Ò °æ¿ì
+            if (!sz.Contains("Login-Success!!") || !sz.Contains("{\""))      //ë¡œê·¸ì¸ì— ì‹¤íŒ¨í–ˆê±°ë‚˜ JSONí˜•ì‹ì´ ì•„ë‹ ê²½ìš°
             {
                 Debug.Log(sz);
                 //ErrorMsg(sz);
@@ -130,7 +130,7 @@ public class TitleMgr : MonoBehaviour
             if (N == null)
                 yield break;
 
-            GlobalValue.g_Unique_ID = idStr;    //±Û·Î¹ú º¯¼ö¿¡ ÀúÀå
+            GlobalValue.g_Unique_ID = idStr;    //ê¸€ë¡œë²Œ ë³€ìˆ˜ì— ì €ì¥
 
             if (N["nick_name"] != null)
                 GlobalValue.g_NickName = N["nick_name"];
@@ -142,7 +142,7 @@ public class TitleMgr : MonoBehaviour
             SceneManager.LoadScene("SampleScene");
         }
         else        
-            ErrorMsg(wRequest.error);      //¿¡·¯ Ç¥½Ã               
+            ErrorMsg(wRequest.error);      //ì—ëŸ¬ í‘œì‹œ               
     }
 
     void SignUp()
@@ -153,25 +153,25 @@ public class TitleMgr : MonoBehaviour
 
         if (a_idStr == "" || a_pwStr == "" || a_nickStr == "")
         {
-            MessageOnOff("ID¿Í PW, NickNameÀ» ºóÄ­¾øÀÌ ÀÔ·ÂÇØ¾ß ÇÕ´Ï´Ù.");
+            MessageOnOff("IDì™€ PW, NickNameì„ ë¹ˆì¹¸ì—†ì´ ì…ë ¥í•´ì•¼ í•©ë‹ˆë‹¤.");
             return;
         }
 
         if (!(3 <= a_idStr.Length && a_idStr.Length <= 10))
         {
-            MessageOnOff("ID´Â 3±ÛÀÚ ÀÌ»ó 10±ÛÀÚ ÀÌÇÏ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            MessageOnOff("IDëŠ” 3ê¸€ì ì´ìƒ 10ê¸€ì ì´í•˜ë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
         if (!(4 <= a_pwStr.Length && a_pwStr.Length <= 15))
         {
-            MessageOnOff("PW´Â 4±ÛÀÚ ÀÌ»ó 15±ÛÀÚ ÀÌÇÏ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            MessageOnOff("PWëŠ” 4ê¸€ì ì´ìƒ 15ê¸€ì ì´í•˜ë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
         if (!(2 <= a_nickStr.Length && a_nickStr.Length <= 6))
         {
-            MessageOnOff("NickNameÀº 2±ÛÀÚ ÀÌ»ó 6±ÛÀÚ ÀÌÇÏ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            MessageOnOff("NickNameì€ 2ê¸€ì ì´ìƒ 6ê¸€ì ì´í•˜ë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
@@ -195,7 +195,7 @@ public class TitleMgr : MonoBehaviour
 
             if (sz.Contains("Create Success."))
             {
-                MessageOnOff("°èÁ¤ÀÌ »ı¼ºµÇ¾ú½À´Ï´Ù.");
+                MessageOnOff("ê³„ì •ì´ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.");
                 LogInPanelOn();
             }
             else
@@ -209,7 +209,7 @@ public class TitleMgr : MonoBehaviour
     }
 
 
-    #region ÆÇ³Ú º¯°æ
+    #region íŒë„¬ ë³€ê²½
     void LogInPanelOn()
     {
         m_signUpPanel.SetActive(false);
@@ -255,13 +255,13 @@ public class TitleMgr : MonoBehaviour
     void ErrorMsg(string str)
     {
         if (str.Contains("ID does not exist."))
-            MessageOnOff("ID°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+            MessageOnOff("IDê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         else if (str.Contains("Pass does not Match."))
-            MessageOnOff("PW°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+            MessageOnOff("PWê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         else if (str.Contains("ID does exist."))
-            MessageOnOff("°°Àº ID°¡ ÀÌ¹Ì Á¸ÀçÇÕ´Ï´Ù.");
+            MessageOnOff("ê°™ì€ IDê°€ ì´ë¯¸ ì¡´ì¬í•©ë‹ˆë‹¤.");
         else if (str.Contains("Nickname does exist."))
-            MessageOnOff("°°Àº NickNameÀÌ ÀÌ¹Ì Á¸ÀçÇÕ´Ï´Ù.");        
+            MessageOnOff("ê°™ì€ NickNameì´ ì´ë¯¸ ì¡´ì¬í•©ë‹ˆë‹¤.");        
         else
             MessageOnOff(str);
     }

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class SlotCtrl : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    public Image m_img;           //ÀÌ ½½·ÔÀÇ Â÷ÀÏµå·Î ºÙ¾îÀÖ´Â ÀÌ¹ÌÁö
+    public Image m_img;           //ì´ ìŠ¬ë¡¯ì˜ ì°¨ì¼ë“œë¡œ ë¶™ì–´ìˆëŠ” ì´ë¯¸ì§€
 
     public void OnBeginDrag(PointerEventData eventData)
     {

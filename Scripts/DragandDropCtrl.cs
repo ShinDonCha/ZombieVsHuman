@@ -1,4 +1,4 @@
-//using UnityEngine;
+ï»¿//using UnityEngine;
 //using UnityEngine.UI;
 //using UnityEngine.EventSystems;
 
@@ -13,11 +13,11 @@
 //{
 //    public Selectitem m_SelectItem = new Selectitem();
         
-//    //data °¡ ³»°¡ ²ø¾î ´ç±æ¶§ ¹Ù²î´Â ÀÌ¹ÌÁö ¹× , ²ø¾î ´ç±æ¼ö ÀÖ´Â ÀÌ¹ÌÁö
+//    //data ê°€ ë‚´ê°€ ëŒì–´ ë‹¹ê¸¸ë•Œ ë°”ë€ŒëŠ” ì´ë¯¸ì§€ ë° , ëŒì–´ ë‹¹ê¸¸ìˆ˜ ìˆëŠ” ì´ë¯¸ì§€
 //    public DragandDropContainer dragAndDropContainer;
 
-//    private GameObject Canvas; // Instantiate ÇÑ Obj ºÎ¸ğ À§Ä¡¸¦ À§ÇØ
-//    private ScrollRect ParentSR;    // ScrollView µ¿ÀÛÀ» À§ÇØ
+//    private GameObject Canvas; // Instantiate í•œ Obj ë¶€ëª¨ ìœ„ì¹˜ë¥¼ ìœ„í•´
+//    private ScrollRect ParentSR;    // ScrollView ë™ì‘ì„ ìœ„í•´
 
 //    private Rect RectSR;
 
@@ -33,7 +33,7 @@
 //        RectSR = new Rect(LTPos, Size);
 //    }
 
-//    // µå·¡±× ¿ÀºêÁ§Æ®¿¡¼­ ¹ß»ı
+//    // ë“œë˜ê·¸ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë°œìƒ
 //    public void OnBeginDrag(PointerEventData eventData)
 //    {
 //        ParentSR.OnBeginDrag(eventData);
@@ -44,7 +44,7 @@
 //        //dragAndDropContainer.image.sprite = data.sprite;
 //        isDragging = true;
 //    }
-//    // µå·¡±× ¿ÀºêÁ§Æ®¿¡¼­ ¹ß»ı
+//    // ë“œë˜ê·¸ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë°œìƒ
 //    public void OnDrag(PointerEventData eventData)
 //    {
 //        if (isDragging)
@@ -52,7 +52,7 @@
 //            dragAndDropContainer.transform.position = eventData.position;
 //        }
 //    }
-//    // µå·¡±× ¿ÀºêÁ§Æ®¿¡¼­ ¹ß»ı
+//    // ë“œë˜ê·¸ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë°œìƒ
 //    public void OnEndDrag(PointerEventData eventData)
 //    {
 //        if (isDragging)
@@ -75,7 +75,7 @@
 //        dragAndDropContainer.gameObject.SetActive(false);
 //    }
 
-//    // µå·Ó ¿ÀºêÁ§Æ®¿¡¼­ ¹ß»ı
+//    // ë“œë¡­ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë°œìƒ
 //    public void OnDrop(PointerEventData eventData)
 //    {
 //        if (dragAndDropContainer.image.sprite != null)

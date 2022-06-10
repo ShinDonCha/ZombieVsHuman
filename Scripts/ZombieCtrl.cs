@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,36 +21,36 @@ class ZombieAniClip
 
 public class ZombieCtrl : MonoBehaviour
 {
-    //----- Á»ºñ °ü·Ã º¯¼ö
+    //----- ì¢€ë¹„ ê´€ë ¨ ë³€ìˆ˜
     [Header("----- Zombie -----")]        
     [SerializeField]
-    private ZombieAniClip m_aniClip;              //À¯´ÏÆ¼¿¡¼­ Á»ºñ ¾Ö´Ï¸ŞÀÌ¼Ç Å¬¸³ ÁöÁ¤ÇØÁÙ º¯¼ö
-    Animator m_zombieAni = null;                  //¾Ö´Ï¸ŞÀÌÅÍ ´ãÀ» º¯¼ö
-    GameObject m_aggroTarget = null;              //Á»ºñÀÇ Å¸°Ù(ÇÃ·¹ÀÌ¾î)
-    ZombieState m_zombiestate = ZombieState.idle; //ÇöÀç Á»ºñÀÇ »óÅÂ
+    private ZombieAniClip m_aniClip;              //ìœ ë‹ˆí‹°ì—ì„œ ì¢€ë¹„ ì• ë‹ˆë©”ì´ì…˜ í´ë¦½ ì§€ì •í•´ì¤„ ë³€ìˆ˜
+    Animator m_zombieAni = null;                  //ì• ë‹ˆë©”ì´í„° ë‹´ì„ ë³€ìˆ˜
+    GameObject m_aggroTarget = null;              //ì¢€ë¹„ì˜ íƒ€ê²Ÿ(í”Œë ˆì´ì–´)
+    ZombieState m_zombiestate = ZombieState.idle; //í˜„ì¬ ì¢€ë¹„ì˜ ìƒíƒœ
 
-    //---- Á»ºñ ½ºÅİ
-    float m_moveSpeed = 3.0f;                    //Á»ºñ ÀÌµ¿¼Óµµ    
-    float m_traceDist = 15.0f;                   //Á»ºñ ÃßÀû°Å¸®
-    float m_attackDist = 2.0f;                   //Á»ºñ °ø°İ°Å¸®    
-    float m_curHp = 0.0f;                       //Á»ºñÀÇ ÇöÀç Ã¼·Â
-    float m_maxHp = 100.0f;                     //Á»ºñÀÇ ÃÖ´ë Ã¼·Â
-    //---- Á»ºñ ½ºÅİ
+    //---- ì¢€ë¹„ ìŠ¤í…Ÿ
+    float m_moveSpeed = 3.0f;                    //ì¢€ë¹„ ì´ë™ì†ë„    
+    float m_traceDist = 15.0f;                   //ì¢€ë¹„ ì¶”ì ê±°ë¦¬
+    float m_attackDist = 2.0f;                   //ì¢€ë¹„ ê³µê²©ê±°ë¦¬    
+    float m_curHp = 0.0f;                       //ì¢€ë¹„ì˜ í˜„ì¬ ì²´ë ¥
+    float m_maxHp = 100.0f;                     //ì¢€ë¹„ì˜ ìµœëŒ€ ì²´ë ¥
+    //---- ì¢€ë¹„ ìŠ¤í…Ÿ
 
-    Vector3 m_calcVec = Vector3.zero;           //Å¸°Ù°ú Á»ºñ»çÀÌÀÇ º¤ÅÍ ´ã´Â º¯¼ö
-    Vector3 m_calcNor = Vector3.zero;           //Å¸°Ù°ú Á»ºñ»çÀÌÀÇ ¹æÇâº¤ÅÍ
-    float m_calcMag = 0.0f;                     //Å¸°Ù°ú Á»ºñ»çÀÌÀÇ °Å¸®
-    float m_attackTime = 0.0f;                 //Á»ºñÀÇ °ø°İ¸ğ¼ÇÀÇ Áö¼Ó½Ã°£À» ´ã´Â º¯¼ö
-    //----- Á»ºñ °ü·Ã º¯¼ö    
+    Vector3 m_calcVec = Vector3.zero;           //íƒ€ê²Ÿê³¼ ì¢€ë¹„ì‚¬ì´ì˜ ë²¡í„° ë‹´ëŠ” ë³€ìˆ˜
+    Vector3 m_calcNor = Vector3.zero;           //íƒ€ê²Ÿê³¼ ì¢€ë¹„ì‚¬ì´ì˜ ë°©í–¥ë²¡í„°
+    float m_calcMag = 0.0f;                     //íƒ€ê²Ÿê³¼ ì¢€ë¹„ì‚¬ì´ì˜ ê±°ë¦¬
+    float m_attackTime = 0.0f;                 //ì¢€ë¹„ì˜ ê³µê²©ëª¨ì…˜ì˜ ì§€ì†ì‹œê°„ì„ ë‹´ëŠ” ë³€ìˆ˜
+    //----- ì¢€ë¹„ ê´€ë ¨ ë³€ìˆ˜    
 
     // Start is called before the first frame update
     void Start()
     {
         m_zombieAni = GetComponentInChildren<Animator>();
 
-        GetComponent<SphereCollider>().radius = m_traceDist;      //ÃßÀû°Å¸® ¸¸Å­ Äİ¶óÀÌ´õ Å©±â Å°¿ì±â
+        GetComponent<SphereCollider>().radius = m_traceDist;      //ì¶”ì ê±°ë¦¬ ë§Œí¼ ì½œë¼ì´ë” í¬ê¸° í‚¤ìš°ê¸°
 
-        SetAni();                                                 //Á»ºñµé¿¡°Ô ·£´ı ¾Ö´Ï¸ŞÀÌ¼Ç ÁöÁ¤ÇØÁÖ±â
+        SetAni();                                                 //ì¢€ë¹„ë“¤ì—ê²Œ ëœë¤ ì• ë‹ˆë©”ì´ì…˜ ì§€ì •í•´ì£¼ê¸°
 
         m_curHp = m_maxHp;
     }
@@ -58,82 +58,82 @@ public class ZombieCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ZombieStateUp();                                        //Á»ºñÀÇ ÇöÀç »óÅÂ
+        ZombieStateUp();                                        //ì¢€ë¹„ì˜ í˜„ì¬ ìƒíƒœ
     }
 
     void ZombieStateUp()
     {
-        if (m_aggroTarget != null)                          //Å¸°ÙÀÌ ÀÖ´Ù¸é(Á»ºñÀÇ Sphere Collider ¾È¿¡ µé¾î¿Â ÇÃ·¹ÀÌ¾î°¡ Å¸°Ù)
+        if (m_aggroTarget != null)                          //íƒ€ê²Ÿì´ ìˆë‹¤ë©´(ì¢€ë¹„ì˜ Sphere Collider ì•ˆì— ë“¤ì–´ì˜¨ í”Œë ˆì´ì–´ê°€ íƒ€ê²Ÿ)
         { 
-            m_calcVec = m_aggroTarget.transform.position - transform.position;      //Á»ºñ¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ º¤ÅÍ
-            m_calcMag = m_calcVec.magnitude;            //Á»ºñ¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ °Å¸®
-            m_calcNor = m_calcVec.normalized;           //Á»ºñ°¡ ÇÃ·¹ÀÌ¾î¸¦ º¸´Â ¹æÇâ
-            transform.forward = m_calcNor;             //Á»ºñ°¡ Å¸°ÙÀ» º¸µµ·Ï ÇÔ
+            m_calcVec = m_aggroTarget.transform.position - transform.position;      //ì¢€ë¹„ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ë²¡í„°
+            m_calcMag = m_calcVec.magnitude;            //ì¢€ë¹„ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ê±°ë¦¬
+            m_calcNor = m_calcVec.normalized;           //ì¢€ë¹„ê°€ í”Œë ˆì´ì–´ë¥¼ ë³´ëŠ” ë°©í–¥
+            transform.forward = m_calcNor;             //ì¢€ë¹„ê°€ íƒ€ê²Ÿì„ ë³´ë„ë¡ í•¨
         }
 
-        if (m_zombiestate == ZombieState.trace)       //Á»ºñ°¡ ÃßÀû»óÅÂ¶ó¸é
+        if (m_zombiestate == ZombieState.trace)       //ì¢€ë¹„ê°€ ì¶”ì ìƒíƒœë¼ë©´
         {
             m_attackTime = 0;                       
-            ZAnimSet("Trace");                      //ÃßÀû ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı          
+            ZAnimSet("Trace");                      //ì¶”ì  ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ          
             
             transform.position = Vector3.MoveTowards(transform.position,
-                    m_aggroTarget.transform.position, m_moveSpeed * Time.deltaTime);        //Á»ºñ¸¦ Å¸°ÙÂÊÀ¸·Î ÀÌµ¿ ½ÃÅ°±â
+                    m_aggroTarget.transform.position, m_moveSpeed * Time.deltaTime);        //ì¢€ë¹„ë¥¼ íƒ€ê²Ÿìª½ìœ¼ë¡œ ì´ë™ ì‹œí‚¤ê¸°
             
-            if(m_calcMag <= m_attackDist)               //Á»ºñ¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ °Å¸®°¡ °ø°İ°Å¸®º¸´Ù ¾ÈÂÊ¿¡ ÀÖ´Ù¸é            
+            if(m_calcMag <= m_attackDist)               //ì¢€ë¹„ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ê±°ë¦¬ê°€ ê³µê²©ê±°ë¦¬ë³´ë‹¤ ì•ˆìª½ì— ìˆë‹¤ë©´            
                 m_zombiestate = ZombieState.attack;            
         }
 
-        else if (m_zombiestate == ZombieState.attack)   //Á»ºñ°¡ °ø°İ»óÅÂ¶ó¸é
+        else if (m_zombiestate == ZombieState.attack)   //ì¢€ë¹„ê°€ ê³µê²©ìƒíƒœë¼ë©´
         {
-            ZAnimSet("Attack");                         //°ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            ZAnimSet("Attack");                         //ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
             m_attackTime += Time.deltaTime;
-            if (m_attackTime > 2.0f && m_attackDist < m_calcMag)        //°ø°İ°Å¸®¸¦ ¹ş¾î³µ°í, Á»ºñÀÇ °ø°İ¸ğ¼ÇÀÌ ³¡³µ´Ù¸é     
+            if (m_attackTime > 2.0f && m_attackDist < m_calcMag)        //ê³µê²©ê±°ë¦¬ë¥¼ ë²—ì–´ë‚¬ê³ , ì¢€ë¹„ì˜ ê³µê²©ëª¨ì…˜ì´ ëë‚¬ë‹¤ë©´     
                 m_zombiestate = ZombieState.trace;            
         }
 
-        else if (m_zombiestate == ZombieState.idle)     //Á»ºñ°¡ ±âº»»óÅÂ¶ó¸é
+        else if (m_zombiestate == ZombieState.idle)     //ì¢€ë¹„ê°€ ê¸°ë³¸ìƒíƒœë¼ë©´
         {   
-            ZAnimSet("Idle");                           //±âº» ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            ZAnimSet("Idle");                           //ê¸°ë³¸ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
         }
     }
     private void OnTriggerEnter(Collider other)
     {        
-        if(other.CompareTag("player"))              //ÃßÀû°Å¸®¿¡ ¾È¿¡ µé¾î¿Â ´ë»óÀÌ ÇÃ·¹ÀÌ¾î¶ó¸é
+        if(other.CompareTag("player"))              //ì¶”ì ê±°ë¦¬ì— ì•ˆì— ë“¤ì–´ì˜¨ ëŒ€ìƒì´ í”Œë ˆì´ì–´ë¼ë©´
         {            
-            m_zombiestate = ZombieState.trace;      //Á»ºñ¸¦ ÃßÀû»óÅÂ·Î º¯°æ
-            m_aggroTarget = other.gameObject;       //ÇØ´çÇÃ·¹ÀÌ¾î¸¦ ÃßÀû´ë»óÀ¸·Î ÀâÀ½           
+            m_zombiestate = ZombieState.trace;      //ì¢€ë¹„ë¥¼ ì¶”ì ìƒíƒœë¡œ ë³€ê²½
+            m_aggroTarget = other.gameObject;       //í•´ë‹¹í”Œë ˆì´ì–´ë¥¼ ì¶”ì ëŒ€ìƒìœ¼ë¡œ ì¡ìŒ           
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("player"))              //ÃßÀû°Å¸® ¹ÛÀ¸·Î ´ë»óÀÌ ³ª°¡¸é
+        if (other.CompareTag("player"))              //ì¶”ì ê±°ë¦¬ ë°–ìœ¼ë¡œ ëŒ€ìƒì´ ë‚˜ê°€ë©´
         {            
-            m_zombiestate = ZombieState.idle;       //Á»ºñ¸¦ ±âº»»óÅÂ·Î º¯°æ
+            m_zombiestate = ZombieState.idle;       //ì¢€ë¹„ë¥¼ ê¸°ë³¸ìƒíƒœë¡œ ë³€ê²½
             m_aggroTarget = null;
         }
     }
 
-    void ZAnimSet(string newAnim)               //¾Ö´Ï¸ŞÀÌÅÍÀÇ State ¹Ù²ãÁÖ´Â ÇÔ¼ö
+    void ZAnimSet(string newAnim)               //ì• ë‹ˆë©”ì´í„°ì˜ State ë°”ê¿”ì£¼ëŠ” í•¨ìˆ˜
     {
-        if(newAnim == "Trace")              //ÃßÀû ¾Ö´Ï¸ŞÀÌ¼Ç
+        if(newAnim == "Trace")              //ì¶”ì  ì• ë‹ˆë©”ì´ì…˜
         {
             if(m_zombieAni.GetBool("IsRun") == false)
                 m_zombieAni.SetBool("IsRun", true);
             if(m_zombieAni.GetBool("IsAttack") == true)
                 m_zombieAni.SetBool("IsAttack", false);
         }
-        else if (newAnim == "Attack")       //°ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç
+        else if (newAnim == "Attack")       //ê³µê²© ì• ë‹ˆë©”ì´ì…˜
         {            
             if(m_zombieAni.GetBool("IsAttack") == false)
                 m_zombieAni.SetBool("IsAttack", true);
         }
-        else if (newAnim == "Idle")         //±âº» ¾Ö´Ï¸ŞÀÌ¼Ç
+        else if (newAnim == "Idle")         //ê¸°ë³¸ ì• ë‹ˆë©”ì´ì…˜
         {
             if (m_zombieAni.GetBool("IsRun") == true)
                 m_zombieAni.SetBool("IsRun", false);
         }
     }
-    void SetAni()           //Á»ºñ¸¶´Ù ·£´ı ¾Ö´Ï¸ŞÀÌ¼Ç ºÎ¿©ÇØÁÖ´Â ÇÔ¼ö
+    void SetAni()           //ì¢€ë¹„ë§ˆë‹¤ ëœë¤ ì• ë‹ˆë©”ì´ì…˜ ë¶€ì—¬í•´ì£¼ëŠ” í•¨ìˆ˜
     {
         int a_num = Random.Range(0, m_aniClip.m_idleAni.Length);
         m_zombieAni.SetFloat("idleBlend", (float)a_num);
@@ -142,9 +142,9 @@ public class ZombieCtrl : MonoBehaviour
         a_num = Random.Range(0, m_aniClip.m_attackAni.Length);
         m_zombieAni.SetFloat("attackBlend", (float)a_num);        
     }
-    void Event_Attack()         //¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ®¿¡¼­ µ¿ÀÛ½ÃÅ´(Á»ºñÀÇ °ø°İ¸ğ¼Ç Áß¿¡ ´ë¹ÌÁö¸¦ ÁÖ±â À§ÇÔ)
+    void Event_Attack()         //ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ì—ì„œ ë™ì‘ì‹œí‚´(ì¢€ë¹„ì˜ ê³µê²©ëª¨ì…˜ ì¤‘ì— ëŒ€ë¯¸ì§€ë¥¼ ì£¼ê¸° ìœ„í•¨)
     {
-        //if (m_calcMag <= m_attackDist)                           //°ø°İ°Å¸® ¾È¿¡ ÀÖ´Ù¸é ´ë¹ÌÁö ÁÖ±â                   
+        //if (m_calcMag <= m_attackDist)                           //ê³µê²©ê±°ë¦¬ ì•ˆì— ìˆë‹¤ë©´ ëŒ€ë¯¸ì§€ ì£¼ê¸°                   
             //m_aggroTarget.GetComponent<PlayerCtrl>().TakeDamage(20);                  
     }
 

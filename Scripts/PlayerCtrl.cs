@@ -1,48 +1,48 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; //UI Ç×¸ñ¿¡ Á¢±ÙÇÏ±â À§ÇØ ¹İµå½Ã Ãß°¡
+using UnityEngine.UI; //UI í•­ëª©ì— ì ‘ê·¼í•˜ê¸° ìœ„í•´ ë°˜ë“œì‹œ ì¶”ê°€
 //using UnityEngine.SceneManagement;
 
 
-[RequireComponent(typeof(Rigidbody))]   //ÀÚµ¿À¸·Î typeof("")  ""¾È¿¡ ÀÖ´Â ÄÄÆ÷³ÍÆ®¸¦ Ãß°¡ÇÔ.
+[RequireComponent(typeof(Rigidbody))]   //ìë™ìœ¼ë¡œ typeof("")  ""ì•ˆì— ìˆëŠ” ì»´í¬ë„ŒíŠ¸ë¥¼ ì¶”ê°€í•¨.
 public class PlayerCtrl : MonoBehaviour
 {
     public static PlayerCtrl inst = null; 
 
-    Rigidbody m_myRigidbody;          //ÇÃ·¹ÀÌ¾î ¸®Áöµå¹Ùµğ
+    Rigidbody m_myRigidbody;          //í”Œë ˆì´ì–´ ë¦¬ì§€ë“œë°”ë””
 
-    //------- ÇÃ·¹ÀÌ¾î ÀÌµ¿
-    //x ÁÂÇ¥´Â ±âº» ¼öÆò Input °ª(h), z ÁÂÇ¥´Â ±âº» ¼öÁ÷ Input °ª (v)
-    private float h = 0.0f;         // ±âº» ¼öÆò Input °ª
-    private float v = 0.0f;         // ±âº» ¼öÁ÷ Input °ª    
-    private float m_moveSpeed = 0.0f;         //ÇÃ·¹ÀÌ¾îÀÇ ¼Óµµ¸¦ ´ãÀ» º¯¼ö
-    private float m_normalSpeed = 5.0f;       //±âº» ¼Óµµ
-    private float m_runSpeed = 10.0f;         //¶Û ¶§ ¼Óµµ
-    private Vector3 m_moveInputV;     //½ºÅ©¸³Æ®·Î Ä³¸¯ÅÍ¸¦ ¿òÁ÷ÀÏ¶§ ¾²´Â º¤ÅÍ°ª(¾ÕµÚ)                                           
-    private Vector3 m_moveInputH;     //½ºÅ©¸³Æ®·Î Ä³¸¯ÅÍ¸¦ ¿òÁ÷ÀÏ¶§ ¾²´Â º¤ÅÍ°ª(ÁÂ¿ì) 
-    private Vector3 m_nextMoveV;      //¹æÇâ º¤ÅÍ°ª¿¡ ¿òÁ÷ÀÌ´Â ¼Óµµ¸¦ °öÇØÁÙ º¤ÅÍ°ª
-    private Vector3 m_nextMoveH;      //¹æÇâ º¤ÅÍ°ª¿¡ ¿òÁ÷ÀÌ´Â ¼Óµµ¸¦ °öÇØÁÙ º¤ÅÍ°ª
-    //------- ÇÃ·¹ÀÌ¾î ÀÌµ¿
+    //------- í”Œë ˆì´ì–´ ì´ë™
+    //x ì¢Œí‘œëŠ” ê¸°ë³¸ ìˆ˜í‰ Input ê°’(h), z ì¢Œí‘œëŠ” ê¸°ë³¸ ìˆ˜ì§ Input ê°’ (v)
+    private float h = 0.0f;         // ê¸°ë³¸ ìˆ˜í‰ Input ê°’
+    private float v = 0.0f;         // ê¸°ë³¸ ìˆ˜ì§ Input ê°’    
+    private float m_moveSpeed = 0.0f;         //í”Œë ˆì´ì–´ì˜ ì†ë„ë¥¼ ë‹´ì„ ë³€ìˆ˜
+    private float m_normalSpeed = 5.0f;       //ê¸°ë³¸ ì†ë„
+    private float m_runSpeed = 10.0f;         //ë›¸ ë•Œ ì†ë„
+    private Vector3 m_moveInputV;     //ìŠ¤í¬ë¦½íŠ¸ë¡œ ìºë¦­í„°ë¥¼ ì›€ì§ì¼ë•Œ ì“°ëŠ” ë²¡í„°ê°’(ì•ë’¤)                                           
+    private Vector3 m_moveInputH;     //ìŠ¤í¬ë¦½íŠ¸ë¡œ ìºë¦­í„°ë¥¼ ì›€ì§ì¼ë•Œ ì“°ëŠ” ë²¡í„°ê°’(ì¢Œìš°) 
+    private Vector3 m_nextMoveV;      //ë°©í–¥ ë²¡í„°ê°’ì— ì›€ì§ì´ëŠ” ì†ë„ë¥¼ ê³±í•´ì¤„ ë²¡í„°ê°’
+    private Vector3 m_nextMoveH;      //ë°©í–¥ ë²¡í„°ê°’ì— ì›€ì§ì´ëŠ” ì†ë„ë¥¼ ê³±í•´ì¤„ ë²¡í„°ê°’
+    //------- í”Œë ˆì´ì–´ ì´ë™
 
-    //------- ÇÃ·¹ÀÌ¾î ¾Ö´Ï¸ŞÀÌ¼Ç
-    private float m_aniSpeed = 5.0f;  // ¾Ö´Ï¸ŞÀÌ¼Ç ºí·»´õ¿¡ Àû¿ëÇÒ ½ºÇÁ¸°Æ® / ´Ş¸®±â º¯°æ¿¡ Àû¿ëµÇ´Â º¯¼ö
-    private float m_aniRot = 0.0f;   // ¾Ö´Ï¸ŞÀÌ¼Ç ºí·»´õ¿¡ Àû¿ëÇÒ ÁÂÃø / Áß°£ / ¿ìÃø Ä³¸¯ÅÍ È¸Àü¿¡ Àû¿ëµÇ´Â º¯¼ö        
-    [HideInInspector] public Animator m_animController;    //ÇÃ·¹ÀÌ¾î°¡ »ç¿ëÇÏ´Â ¸ğµ¨¿¡ Àû¿ëµÉ ¾Ö´Ï¸ŞÀÌ¼Ç ÄÁÆ®·Ñ·¯
-    //------- ÇÃ·¹ÀÌ¾î ¾Ö´Ï¸ŞÀÌ¼Ç        
+    //------- í”Œë ˆì´ì–´ ì• ë‹ˆë©”ì´ì…˜
+    private float m_aniSpeed = 5.0f;  // ì• ë‹ˆë©”ì´ì…˜ ë¸”ë Œë”ì— ì ìš©í•  ìŠ¤í”„ë¦°íŠ¸ / ë‹¬ë¦¬ê¸° ë³€ê²½ì— ì ìš©ë˜ëŠ” ë³€ìˆ˜
+    private float m_aniRot = 0.0f;   // ì• ë‹ˆë©”ì´ì…˜ ë¸”ë Œë”ì— ì ìš©í•  ì¢Œì¸¡ / ì¤‘ê°„ / ìš°ì¸¡ ìºë¦­í„° íšŒì „ì— ì ìš©ë˜ëŠ” ë³€ìˆ˜        
+    [HideInInspector] public Animator m_animController;    //í”Œë ˆì´ì–´ê°€ ì‚¬ìš©í•˜ëŠ” ëª¨ë¸ì— ì ìš©ë  ì• ë‹ˆë©”ì´ì…˜ ì»¨íŠ¸ë¡¤ëŸ¬
+    //------- í”Œë ˆì´ì–´ ì• ë‹ˆë©”ì´ì…˜        
 
-    //----- ÇÃ·¹ÀÌ¾î ½ºÅİ
-    float m_curHp = 0.0f;               //ÇöÀç Ã¼·Â
-    float m_maxHp = 100.0f;             //ÃÖ´ë Ã¼·Â
-    //----- ÇÃ·¹ÀÌ¾î ½ºÅİ       
+    //----- í”Œë ˆì´ì–´ ìŠ¤í…Ÿ
+    float m_curHp = 0.0f;               //í˜„ì¬ ì²´ë ¥
+    float m_maxHp = 100.0f;             //ìµœëŒ€ ì²´ë ¥
+    //----- í”Œë ˆì´ì–´ ìŠ¤í…Ÿ       
     
-    [HideInInspector] public bool m_isRun = true;       //¿òÁ÷ÀÏ ¼ö ÀÖ´Â »óÅÂÀÎÁö
-    [HideInInspector] public bool m_isLoot = false;     //Áİ±â »óÅÂ ÀÎÁö     
-    public Image m_hpBar;                               //hpbar ÀÌ¹ÌÁö
+    [HideInInspector] public bool m_isRun = true;       //ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ìƒíƒœì¸ì§€
+    [HideInInspector] public bool m_isLoot = false;     //ì¤ê¸° ìƒíƒœ ì¸ì§€     
+    public Image m_hpBar;                               //hpbar ì´ë¯¸ì§€
                                                 
-    [HideInInspector] public List<ItemCtrl> m_itemList = new List<ItemCtrl>();     //ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ Ãæµ¹¹İ°æ¿¡ µé¾î¿Â ¾ÆÀÌÅÛ ¸®½ºÆ®
+    [HideInInspector] public List<ItemCtrl> m_itemList = new List<ItemCtrl>();     //í˜„ì¬ í”Œë ˆì´ì–´ì˜ ì¶©ëŒë°˜ê²½ì— ë“¤ì–´ì˜¨ ì•„ì´í…œ ë¦¬ìŠ¤íŠ¸
 
-    [HideInInspector] public WeaponCtrl m_nowWeapon = null;     //ÇöÀç ÇÃ·¹ÀÌ¾î°¡ ¼ÒÁöÇÏ°íÀÖ´Â ¹«±â
+    [HideInInspector] public WeaponCtrl m_nowWeapon = null;     //í˜„ì¬ í”Œë ˆì´ì–´ê°€ ì†Œì§€í•˜ê³ ìˆëŠ” ë¬´ê¸°
     
 
     // Start is called before the first frame update
@@ -71,40 +71,40 @@ public class PlayerCtrl : MonoBehaviour
         v = Input.GetAxis("Vertical");
         h = Input.GetAxisRaw("Horizontal");
 
-        if (m_isRun == false)               //Áİ±â µ¿ÀÛ Áß ÀÌµ¿ ºÒ°¡
+        if (m_isRun == false)               //ì¤ê¸° ë™ì‘ ì¤‘ ì´ë™ ë¶ˆê°€
             return;
 
-        if (h == 0 && v == 0 && m_animController.GetBool("Roll") == false) //ÀÔ·Â ¾øÀ» ½Ã ¾Æ·¡ ÄÚµå µ¿ÀÛ ¾ÈÇÔ
+        if (h == 0 && v == 0 && m_animController.GetBool("Roll") == false) //ì…ë ¥ ì—†ì„ ì‹œ ì•„ë˜ ì½”ë“œ ë™ì‘ ì•ˆí•¨
             return;
 
-        m_moveInputV = transform.forward * v;                   //È¸Àü»óÅÂ¿¡¼­ÀÇ Á¤¸é°ª°ú vÀ» °öÇØ¼­ ÇöÀç ¹Ù¶óº¸°íÀÖ´Â ¹æÇâÀ» ±âÁØÀ¸·Î ¿òÁ÷ÀÌµµ·Ï ÇÔ
-        m_moveInputH = transform.right * h;                     //È¸Àü»óÅÂ¿¡¼­ÀÇ ¿ìÃø°ª°ú h¸¦ °öÇØ¼­ ÇöÀç ¹Ù¶óº¸°íÀÖ´Â ¹æÇâÀ» ±âÁØÀ¸·Î ¿òÁ÷ÀÌµµ·Ï ÇÔ
+        m_moveInputV = transform.forward * v;                   //íšŒì „ìƒíƒœì—ì„œì˜ ì •ë©´ê°’ê³¼ vì„ ê³±í•´ì„œ í˜„ì¬ ë°”ë¼ë³´ê³ ìˆëŠ” ë°©í–¥ì„ ê¸°ì¤€ìœ¼ë¡œ ì›€ì§ì´ë„ë¡ í•¨
+        m_moveInputH = transform.right * h;                     //íšŒì „ìƒíƒœì—ì„œì˜ ìš°ì¸¡ê°’ê³¼ hë¥¼ ê³±í•´ì„œ í˜„ì¬ ë°”ë¼ë³´ê³ ìˆëŠ” ë°©í–¥ì„ ê¸°ì¤€ìœ¼ë¡œ ì›€ì§ì´ë„ë¡ í•¨
 
-        m_nextMoveV = m_moveInputV.normalized * m_moveSpeed;       //¹æÇâ º¤ÅÍ°ª¿¡ ¿òÁ÷ÀÌ´Â ¼Óµµ¸¦ °öÇØ¼­ ¾ÕµÚ·Î ÀÌµ¿ÇÒ °Å¸®¸¦ ±¸ÇÔ
-        m_nextMoveH = m_moveInputH.normalized * m_moveSpeed;       //¹æÇâ º¤ÅÍ°ª¿¡ ¿òÁ÷ÀÌ´Â ¼Óµµ¸¦ °öÇØ¼­ ÁÂ¿ì·Î ÀÌµ¿ÇÒ °Å¸®¸¦ ±¸ÇÔ
+        m_nextMoveV = m_moveInputV.normalized * m_moveSpeed;       //ë°©í–¥ ë²¡í„°ê°’ì— ì›€ì§ì´ëŠ” ì†ë„ë¥¼ ê³±í•´ì„œ ì•ë’¤ë¡œ ì´ë™í•  ê±°ë¦¬ë¥¼ êµ¬í•¨
+        m_nextMoveH = m_moveInputH.normalized * m_moveSpeed;       //ë°©í–¥ ë²¡í„°ê°’ì— ì›€ì§ì´ëŠ” ì†ë„ë¥¼ ê³±í•´ì„œ ì¢Œìš°ë¡œ ì´ë™í•  ê±°ë¦¬ë¥¼ êµ¬í•¨
 
-        //---------- ´Ş¸®±â
+        //---------- ë‹¬ë¦¬ê¸°
         if (Input.GetKey(KeyCode.LeftShift) && v > 0
-            && m_nowWeapon.m_zoomInOut == false)    // ¾ÕÀÌ³ª µÚ·Î ÀÌµ¿ÇÏ°íÀÖ°í ÁÜÀÎÀÌ ¾Æ´Ï¶ó¸é LeftShift¸¦ ´­·¶À»¶§ ¼Óµµ º¯°æ
+            && m_nowWeapon.m_zoomInOut == false)    // ì•ì´ë‚˜ ë’¤ë¡œ ì´ë™í•˜ê³ ìˆê³  ì¤Œì¸ì´ ì•„ë‹ˆë¼ë©´ LeftShiftë¥¼ ëˆŒë €ì„ë•Œ ì†ë„ ë³€ê²½
         {           
             m_moveSpeed = m_runSpeed;
-            if (m_aniSpeed < m_runSpeed)                     //Ani_Speed -> ºí·»´õ¿¡¼­ ´Ş¸®±â / ¶Ù±â¸¦ º¯°æ½ÃÄÑÁÙ 
+            if (m_aniSpeed < m_runSpeed)                     //Ani_Speed -> ë¸”ë Œë”ì—ì„œ ë‹¬ë¦¬ê¸° / ë›°ê¸°ë¥¼ ë³€ê²½ì‹œì¼œì¤„ 
                 m_aniSpeed += Time.deltaTime * 7;
             else if (m_aniSpeed > m_runSpeed)
                 m_aniSpeed = m_runSpeed;
         }
         //if (!Input.GetKey(KeyCode.LeftShift))
-        else                                          //±âÁ¸ »óÅÂÀÏ¶§, ¼Óµµ°ª Á¶Àı  (±âº» ¿òÁ÷ÀÓ)
+        else                                          //ê¸°ì¡´ ìƒíƒœì¼ë•Œ, ì†ë„ê°’ ì¡°ì ˆ  (ê¸°ë³¸ ì›€ì§ì„)
         {            
             m_moveSpeed = m_normalSpeed;
 
             if (m_nowWeapon.m_zoomInOut == true)
             { 
-                m_moveSpeed /= 2;                   //ÁÜÀÎ »óÅÂ¶ó¸é ÀÌµ¿¼Óµµ°¡ Àı¹İ
-                m_animController.speed = 0.5f;      //¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı¼Óµµ Àı¹İ
+                m_moveSpeed /= 2;                   //ì¤Œì¸ ìƒíƒœë¼ë©´ ì´ë™ì†ë„ê°€ ì ˆë°˜
+                m_animController.speed = 0.5f;      //ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒì†ë„ ì ˆë°˜
             }
             else            
-                m_animController.speed = 1.0f;      //¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı¼Óµµ ¿ø·¡´ë·Î               
+                m_animController.speed = 1.0f;      //ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒì†ë„ ì›ë˜ëŒ€ë¡œ               
 
             if (m_aniSpeed > m_normalSpeed)
             {
@@ -113,14 +113,14 @@ public class PlayerCtrl : MonoBehaviour
                     m_aniSpeed = m_normalSpeed;
             }
         }
-        //---------- ´Ş¸®±â
+        //---------- ë‹¬ë¦¬ê¸°
 
-        if(m_animController.GetBool("Roll") == true)          //±¸¸£±â ÇÒ ¶§
+        if(m_animController.GetBool("Roll") == true)          //êµ¬ë¥´ê¸° í•  ë•Œ
             m_myRigidbody.MovePosition(m_myRigidbody.position + transform.forward * m_moveSpeed * Time.deltaTime);        
-        else                                                    //±¸¸£±â ¾Æ´Ò ¶§
+        else                                                    //êµ¬ë¥´ê¸° ì•„ë‹ ë•Œ
         {
-            m_myRigidbody.MovePosition(m_myRigidbody.position + m_nextMoveV * Time.deltaTime);         //ÇÃ·¹ÀÌ¾î ÀÌµ¿
-            m_myRigidbody.MovePosition(m_myRigidbody.position + m_nextMoveH * Time.deltaTime);         //ÇÃ·¹ÀÌ¾î ÀÌµ¿
+            m_myRigidbody.MovePosition(m_myRigidbody.position + m_nextMoveV * Time.deltaTime);         //í”Œë ˆì´ì–´ ì´ë™
+            m_myRigidbody.MovePosition(m_myRigidbody.position + m_nextMoveH * Time.deltaTime);         //í”Œë ˆì´ì–´ ì´ë™
         }
         
     }
@@ -134,23 +134,23 @@ public class PlayerCtrl : MonoBehaviour
 
             m_isLoot = !m_isLoot;
 
-            m_animController.SetBool("isLoot", m_isLoot);       //Áİ±â ¾Ö´Ï¸ŞÀÌ¼Ç Á¦¾î
+            m_animController.SetBool("isLoot", m_isLoot);       //ì¤ê¸° ì• ë‹ˆë©”ì´ì…˜ ì œì–´
 
             GameObject.Find("UICanvas").GetComponent<CanvasCtrl>().InvenPanel();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))                //±¸¸£±â ¾Ö´Ï¸ŞÀÌ¼Ç Ãâ·Â
+        if (Input.GetKeyDown(KeyCode.Space))                //êµ¬ë¥´ê¸° ì• ë‹ˆë©”ì´ì…˜ ì¶œë ¥
             m_animController.SetBool("Roll", true);
 
-        if (m_animController.GetCurrentAnimatorStateInfo(0).IsName("Roll"))          //±¸¸£±â ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³¯ ¶§ ÆÄ¶ó¹ÌÅÍ º¯°æ             
+        if (m_animController.GetCurrentAnimatorStateInfo(0).IsName("Roll"))          //êµ¬ë¥´ê¸° ì• ë‹ˆë©”ì´ì…˜ ëë‚  ë•Œ íŒŒë¼ë¯¸í„° ë³€ê²½             
             if (1.0f < m_animController.GetCurrentAnimatorStateInfo(0).normalizedTime)
                 m_animController.SetBool("Roll", false);
 
-        if (m_animController.GetCurrentAnimatorStateInfo(0).IsName("Loot_off"))     //Áİ±â ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³¯ ¶§ ÀÌµ¿ °¡´ÉÇÏ°Ô º¯°æ
+        if (m_animController.GetCurrentAnimatorStateInfo(0).IsName("Loot_off"))     //ì¤ê¸° ì• ë‹ˆë©”ì´ì…˜ ëë‚  ë•Œ ì´ë™ ê°€ëŠ¥í•˜ê²Œ ë³€ê²½
             if (0.9f < m_animController.GetCurrentAnimatorStateInfo(0).normalizedTime)
                 m_isRun = true;       
 
-        //----- È¸Àü ¾Ö´Ï¸ŞÀÌ¼Ç
+        //----- íšŒì „ ì• ë‹ˆë©”ì´ì…˜
         if (h > 0)
         {
             m_aniRot += Time.deltaTime * 30;
@@ -163,7 +163,7 @@ public class PlayerCtrl : MonoBehaviour
             if (m_aniRot < -10)
                 m_aniRot = -10;
         }
-        else    //ÁÂ¿ìÃøÀ¸·ÎÀÇ ÀÌµ¿ÀÌ ¾øÀ» ¶§
+        else    //ì¢Œìš°ì¸¡ìœ¼ë¡œì˜ ì´ë™ì´ ì—†ì„ ë•Œ
         {
             if (m_aniRot > 0.1)
                 m_aniRot -= Time.deltaTime * 30;
@@ -172,14 +172,14 @@ public class PlayerCtrl : MonoBehaviour
             else
                 m_aniRot = 0;
         }
-        //----- È¸Àü ¾Ö´Ï¸ŞÀÌ¼Ç
+        //----- íšŒì „ ì• ë‹ˆë©”ì´ì…˜
 
-        m_animController.SetFloat("Vertical", v * 10);    //¾Ö´Ï¸ŞÀÌ¼Ç ÄÁÆ®·Ñ·¯¿¡ º¯¼ö°ª Àü´Ş
-        m_animController.SetFloat("Horizontal", m_aniRot); //¾Ö´Ï¸ŞÀÌ¼Ç ÄÁÆ®·Ñ·¯¿¡ º¯¼ö°ª Àü´Ş
-        m_animController.SetFloat("Speed", m_aniSpeed);    //¾Ö´Ï¸ŞÀÌ¼Ç ÄÁÆ®·Ñ·¯¿¡ º¯¼ö°ª Àü´Ş      
+        m_animController.SetFloat("Vertical", v * 10);    //ì• ë‹ˆë©”ì´ì…˜ ì»¨íŠ¸ë¡¤ëŸ¬ì— ë³€ìˆ˜ê°’ ì „ë‹¬
+        m_animController.SetFloat("Horizontal", m_aniRot); //ì• ë‹ˆë©”ì´ì…˜ ì»¨íŠ¸ë¡¤ëŸ¬ì— ë³€ìˆ˜ê°’ ì „ë‹¬
+        m_animController.SetFloat("Speed", m_aniSpeed);    //ì• ë‹ˆë©”ì´ì…˜ ì»¨íŠ¸ë¡¤ëŸ¬ì— ë³€ìˆ˜ê°’ ì „ë‹¬      
     }       
 
-    public void TakeDamage(float damage)        //¾ê´Â Á»ºñÀÇ °ø°İÀ» ¸Â¾ÒÀ» ¶§ µ¿ÀÛ
+    public void TakeDamage(float damage)        //ì–˜ëŠ” ì¢€ë¹„ì˜ ê³µê²©ì„ ë§ì•˜ì„ ë•Œ ë™ì‘
     {
         if (m_curHp < 0.0f)
             return;
@@ -199,22 +199,22 @@ public class PlayerCtrl : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        // 1.¹°°Ç°ú °ü·ÃµÈ UI °¡ ÄÑÁö°Ô ¸¸µê,
-        // 2.Æ¯Á¤Å°¸¦ ´©¸£¸é ¾À »óÀÇ ¹°°Ç(ÇÁ¸®ÆÕ)ÀÌ »èÁ¦µÇ°í ÇÃ·¹ÀÌ¾î ÀÎº¥Åä¸®¿¡ ¿Å±æ¼öÀÖ°Ô ¸¸µê,
-        // 3. 2¹øÀÇ °úÁ¤¿¡¼­ ¾À»óÀÇ ¹°°ÇÀÌ¸§°ú °ø¿ë½ºÅ©¸³Æ®ÀÇ Å¬·¡½º¿Í ºñ±³ÇÏ¿© ÀÎº¥Åä¸®¿¡ ¿Å±â´Â for¹®È£Ãâ
+        // 1.ë¬¼ê±´ê³¼ ê´€ë ¨ëœ UI ê°€ ì¼œì§€ê²Œ ë§Œë“¦,
+        // 2.íŠ¹ì •í‚¤ë¥¼ ëˆ„ë¥´ë©´ ì”¬ ìƒì˜ ë¬¼ê±´(í”„ë¦¬íŒ¹)ì´ ì‚­ì œë˜ê³  í”Œë ˆì´ì–´ ì¸ë²¤í† ë¦¬ì— ì˜®ê¸¸ìˆ˜ìˆê²Œ ë§Œë“¦,
+        // 3. 2ë²ˆì˜ ê³¼ì •ì—ì„œ ì”¬ìƒì˜ ë¬¼ê±´ì´ë¦„ê³¼ ê³µìš©ìŠ¤í¬ë¦½íŠ¸ì˜ í´ë˜ìŠ¤ì™€ ë¹„êµí•˜ì—¬ ì¸ë²¤í† ë¦¬ì— ì˜®ê¸°ëŠ” forë¬¸í˜¸ì¶œ
         if (other.CompareTag("Item"))
         {
-            m_itemList.Add(other.GetComponent<ItemCtrl>());     //¾ÆÀÌÅÛ ¸®½ºÆ®¿¡ Ãß°¡
+            m_itemList.Add(other.GetComponent<ItemCtrl>());     //ì•„ì´í…œ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // 1. ¹°°Ç°ú °ü·ÃµÈ UI°¡ ²¨Áö°Ô ¸¸µê,
-        // 2. Æ¯Á¤Å°°¡ ÀÛµ¿¾ÈµÇ°ÔÇÔ.
+        // 1. ë¬¼ê±´ê³¼ ê´€ë ¨ëœ UIê°€ êº¼ì§€ê²Œ ë§Œë“¦,
+        // 2. íŠ¹ì •í‚¤ê°€ ì‘ë™ì•ˆë˜ê²Œí•¨.
         if (other.CompareTag("Item"))
         {
-            m_itemList.Remove(other.GetComponent<ItemCtrl>());  //¾ÆÀÌÅÛ ¸®½ºÆ®¿¡¼­ »èÁ¦   
+            m_itemList.Remove(other.GetComponent<ItemCtrl>());  //ì•„ì´í…œ ë¦¬ìŠ¤íŠ¸ì—ì„œ ì‚­ì œ   
         }
     }           
 }
