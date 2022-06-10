@@ -5,14 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BulletCtrl : MonoBehaviour
 {
-    private float m_bulletSpeed = 2000.0f;          //ì´ì•Œì˜ ì†ë„    
+    private float m_bulletSpeed = 2000.0f;          //ÃÑ¾ËÀÇ ¼Óµµ    
 
     // Start is called before the first frame update
     void Start()
     {        
         GetComponent<Rigidbody>().AddForce(transform.forward * m_bulletSpeed);
 
-        Destroy(gameObject, 3.0f);          //3ì´ˆë’¤ ìë™ìœ¼ë¡œ ì‚­ì œ
+        Destroy(gameObject, 3.0f);          //3ÃÊµÚ ÀÚµ¿À¸·Î »èÁ¦
     }
 
     // Update is called once per frame
@@ -25,7 +25,7 @@ public class BulletCtrl : MonoBehaviour
     {
         if (other.CompareTag("Zombie"))
         {
-            other.GetComponent<ZombieCtrl>().TakeDamage(10);        //ì„ì‹œë¡œ 10ë°ë¯¸ì§€
+            other.GetComponent<ZombieCtrl>().TakeDamage(10);        //ÀÓ½Ã·Î 10µ¥¹ÌÁö
             Destroy(gameObject);
         }
         else if (other.CompareTag("Terrain"))

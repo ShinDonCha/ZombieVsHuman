@@ -17,7 +17,7 @@ public class WeaponCtrl : MonoBehaviour
     public GameObject m_bulletObj = null;       //총알 리소스 담을 변수
     public MeshRenderer m_muzzleFlash = null;   //총구 불빛 이펙트의 Meshrenderer
     public Transform m_firePos = null;          //총구 transform 담을 변수
-    private bool m_zoomInOut = false;           //true일 때 줌인
+    [HideInInspector] public bool m_zoomInOut = false;           //true일 때 줌인
     //----- 아이템이 총일 때 필요한 변수
 
     private bool m_misFire = false;               //공격 불가능 상태    
@@ -28,9 +28,14 @@ public class WeaponCtrl : MonoBehaviour
     Vector3 m_targetPos = Vector3.zero;         //타격점을 담는 변수
     //---- 공통적으로 필요한 부분
 
+    void Awake()
+    {
+        PlayerCtrl.inst.m_nowWeapon = this;           //현재 이 무기가 플레이어가 착용한 무기임
+    }
+
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         //----- 어떤 무기인지에 따라서 타입 바꿔주기
         if (this.gameObject.name.Contains("K2c1"))
             m_weaponType = ItemType.K2;
@@ -38,7 +43,7 @@ public class WeaponCtrl : MonoBehaviour
             m_weaponType = ItemType.M16;
         else if (this.gameObject.name.Contains("Bat"))
             m_weaponType = ItemType.Bat;
-        //----- 어떤 무기인지에 따라서 타입 바꿔주기
+        //----- 어떤 무기인지에 따라서 타입 바꿔주기        
 
         m_attackDelay = GlobalValue.g_itemDic[m_weaponType].m_attackDelay;          //무기의 공격 딜레이 설정
 
@@ -85,10 +90,10 @@ public class WeaponCtrl : MonoBehaviour
 
         if (m_weaponType != ItemType.Bat)         //무기가 총일 경우만...
         {
-            CrossHairCon();
+            CrossHairCon();            
 
             if (Input.GetMouseButtonDown(1))
-                m_zoomInOut = !m_zoomInOut;
+                m_zoomInOut = !m_zoomInOut;            
         }
     }
 
@@ -169,5 +174,5 @@ public class WeaponCtrl : MonoBehaviour
         //    StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expanding의 scale 감소 코루틴 시작
         //    StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expanding의 scale 감소 코루틴 정지
         //}
-    }
+    }    
 }

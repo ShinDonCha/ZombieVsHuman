@@ -42,6 +42,9 @@ public class PlayerCtrl : MonoBehaviour
                                                 
     [HideInInspector] public List<ItemCtrl> m_itemList = new List<ItemCtrl>();     //현재 플레이어의 충돌반경에 들어온 아이템 리스트
 
+    [HideInInspector] public WeaponCtrl m_nowWeapon = null;     //현재 플레이어가 소지하고있는 무기
+    
+
     // Start is called before the first frame update
     void Awake()
     {       
@@ -81,7 +84,8 @@ public class PlayerCtrl : MonoBehaviour
         m_nextMoveH = m_moveInputH.normalized * m_moveSpeed;       //방향 벡터값에 움직이는 속도를 곱해서 좌우로 이동할 거리를 구함
 
         //---------- 달리기
-        if (Input.GetKey(KeyCode.LeftShift) && v > 0)    // 앞을 보는상태에서 LeftShift를 누르면 속도가 바뀌게 조절 (달리는 중)
+        if (Input.GetKey(KeyCode.LeftShift) && v > 0
+            && m_nowWeapon.m_zoomInOut == false)    // 앞이나 뒤로 이동하고있고 줌인이 아니라면 LeftShift를 눌렀을때 속도 변경
         {           
             m_moveSpeed = m_runSpeed;
             if (m_aniSpeed < m_runSpeed)                     //Ani_Speed -> 블렌더에서 달리기 / 뛰기를 변경시켜줄 
@@ -93,6 +97,15 @@ public class PlayerCtrl : MonoBehaviour
         else                                          //기존 상태일때, 속도값 조절  (기본 움직임)
         {            
             m_moveSpeed = m_normalSpeed;
+
+            if (m_nowWeapon.m_zoomInOut == true)
+            { 
+                m_moveSpeed /= 2;                   //줌인 상태라면 이동속도가 절반
+                m_animController.speed = 0.5f;      //애니메이션 재생속도 절반
+            }
+            else            
+                m_animController.speed = 1.0f;      //애니메이션 재생속도 원래대로               
+
             if (m_aniSpeed > m_normalSpeed)
             {
                 m_aniSpeed -= Time.deltaTime * 7;
