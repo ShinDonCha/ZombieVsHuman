@@ -10,32 +10,31 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     public ItemType item;
     public static int itemCount; // 획득한 아이템의 개수
     public int UniqueitemNum;   // 이 슬롯 아이템의 넘버
+    public static Vector3 Slottr;
+
 
     void Awake()
     {
         itemImage = this.gameObject.GetComponent<Image>();
         UniqueitemNum = itemCount;
 
+
     }
 
-    void Update()
-    {
-        //Debug.Log(UniqueitemNum);
-    }
 
     // 마우스 드래그가 시작 됐을 때 발생하는 이벤트
     public void OnBeginDrag(PointerEventData eventData)
-    {          
-            DragSlot.instance.dragSlot = this;
-            DragSlot.instance.DragSetImage(itemImage);
-            DragSlot.instance.transform.position = eventData.position;
-        
+    {
+        DragSlot.instance.dragSlot = this;
+        DragSlot.instance.DragSetImage(itemImage);
+        DragSlot.instance.transform.position = eventData.position;
+
     }
 
     // 마우스 드래그 중일 때 계속 발생하는 이벤트
     public void OnDrag(PointerEventData eventData)
-    {       
-            DragSlot.instance.transform.position = eventData.position;
+    {
+        DragSlot.instance.transform.position = eventData.position;
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -44,28 +43,30 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         {
             ChangeSlot();
         }
-    } 
+    }
 
     // 마우스 드래그가 끝났을 때 발생하는 이벤트
     public void OnEndDrag(PointerEventData eventData)
     {
-        
+
         DragSlot.instance.SetColor(0);
         DragSlot.instance.dragSlot = null;
+        DragSlot.instance.transform.position = Slottr;
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-    
+
     }
 
 
     private void ChangeSlot()
     {
-        ItemType _tempItem = item;        
+        ItemType _tempItem = item;
         int _tempItemCount = itemCount;
 
-        AddItem(DragSlot.instance.dragSlot.item,DragSlot.instance.dragSlot.UniqueitemNum);
+        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.UniqueitemNum);
 
         if ((int)_tempItem > 0 || (int)_tempItem <= (int)ItemType.ItemCount)
             DragSlot.instance.dragSlot.AddItem(_tempItem);

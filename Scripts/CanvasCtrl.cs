@@ -12,19 +12,20 @@ public class CanvasCtrl : MonoBehaviour
     public GameObject m_slotObj = null;             //slot 게임오브젝트      
     private int m_invenFullSlotCount = 12;                   //invenPanel에 넣어줄 버튼 개수
     private int m_rootFullSlotCount = 28;               //rootPanel에 넣어줄 버튼 개수
-    
+
     private Vector3 slotSize = Vector3.one;         //Slot 사이즈 수동조절을 위한 Vector 변수 (1,1,1)
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        ExplainMsg();   //"F키 ~" 메시지 출력조절 함수                
+        ExplainMsg();   //"F키 ~" 메시지 출력조절 함수
+
     }
 
     void ExplainMsg()   //아이템 줍기 키 표시
@@ -46,24 +47,27 @@ public class CanvasCtrl : MonoBehaviour
 
             for (int rootadd = 0; rootadd < m_rootFullSlotCount; rootadd++)           //루트 패널에 맞는 슬롯 개수만큼 슬롯 생성
             {
-                Debug.Log(SlotCtrl.itemCount);
-                Debug.Log(rootadd);
+                Debug.Log(PlayerCtrl.inst.m_itemList.Count);
                 GameObject a_slotobj = Instantiate(m_slotObj);
                 a_slotobj.transform.SetParent(m_rootContent.transform);
                 a_slotobj.transform.localScale = slotSize;                       //SetParent에서 불러오면 사이즈가 자동조절되서 수동으로 다시 1로 바꿔줌.                
                 SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();
+                a_slotobj.transform.position = SlotCtrl.Slottr;
+
 
                 if (rootadd < PlayerCtrl.inst.m_itemList.Count)                   //주위에있는 아이템 개수만큼만 실행
                 {
+
+                    Debug.Log(PlayerCtrl.inst.m_itemList[rootadd].m_itemType);
                     a_slotc.itemImage.sprite = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_iconImg; //딕셔너리에서 아이템에 맞는 이미지 가져옴
                     a_slotc.item = GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_itType;      //딕셔너리에서 아이템에 맞는 아이템 타입을가져옴
                     a_slotc.itemImage.GetComponent<RectTransform>().sizeDelta =
                     GlobalValue.g_itemDic[PlayerCtrl.inst.m_itemList[rootadd].m_itemType].m_iconSize
                         * m_rootContent.GetComponent<GridLayoutGroup>().cellSize;
                     SlotCtrl.itemCount++;
-                    
+
                 }
-                    
+
             }
             for (int invenadd = 0; invenadd < m_invenFullSlotCount; invenadd++)     //인벤토리 패널에 맞는 슬롯 개수만큼 슬롯 생성
             {
