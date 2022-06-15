@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,10 +6,13 @@ using UnityEngine.UI;
 public class DragSlot : MonoBehaviour
 {
     static public DragSlot instance;
-    public SlotCtrl dragSlot;
+    public SlotCtrl dragSlot;    
+    
 
     [SerializeField]
     private Image imageItem;
+    
+
 
     void Start()
     {
