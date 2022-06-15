@@ -114,46 +114,4 @@ public class InvenPanelCtrl : MonoBehaviour , IPointerClickHandler, IBeginDragHa
         //    //m_Slot.ClearSlot();
     }
 
-    public void AddItem(ItemType _item, int _count = 0 )
-    {
-     
-            m_SlotCtrl.item = _item;
-            m_SlotCtrl.UniqueitemNum = _count;
-            m_SlotCtrl.GetComponent<Image>().sprite = GlobalValue.g_itemDic[_item].m_iconImg;
-        
-            m_ChangeSlotCtrl.item = _item;
-            m_ChangeSlotCtrl.UniqueitemNum = _count;
-            m_ChangeSlot.GetComponent<Image>().sprite = GlobalValue.g_itemDic[_item].m_iconImg;
-    
-        
-            //if (item.itemType != Item.ItemType.Equipment)
-        //{
-        //    go_CountImage.SetActive(true);
-        //    text_Count.text = itemCount.ToString();
-        //}
-        //else
-        //{
-        //    text_Count.text = "0";
-        //    go_CountImage.SetActive(false);
-        //}
-
-        SetColor(1);
-    }
-
-    //private void ClearSlot()
-    //{
-    //    DragSlot.instance.dragSlot.item = ItemType.Null;
-    //    DragSlot.instance.itemCount = 0;
-    //    DragSlot.instance.Image.sprite = null;
-    //    SetColor(0);
-
-
-    //}
-
-    private void SetColor(float _alpha)
-    {
-        Color color = itemImage.color;
-        color.a = _alpha;
-        itemImage.color = color;
-    }
 }
