@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,122 +13,126 @@ public enum ItemType
     Null
 }
 
-public class ItemInfo  //°¢ Item Á¤º¸
+
+public class ItemInfo  //ê° Item ì •ë³´  // ì•„ì´í…œ ë‚´êµ¬ë„ => Maganize í†µí•©.
 {
-    public string m_name = "";                  //¾ÆÀÌÅÛ ÀÌ¸§
-    public int m_damage = 0;                    //¾ÆÀÌÅÛ °ø°İ·Â
-    public int m_duration = 0;                  //¾ÆÀÌÅÛ ³»±¸µµ
-    public int m_maganize = 0;                  //¾ÆÀÌÅÛ ÃÑ¾Ë°¹¼ö
-    public float m_expandScale = 0.0f;          //¹ß´ç ´Ã¾î³ª´Â ½ÊÀÚ¼± Å©±â
-    public float m_maxScale = 0.0f;             //½ÊÀÚ¼± ÃÖ´ë Å©±â
-    public float m_shrinkSpeed = 0.0f;          //½ÊÀÚ¼± ÁÙ¾îµå´Â ¼Óµµ
-    public float m_attackDelay = 0.0f;          //°ø°İ µô·¹ÀÌ
+    public string m_name = "";                  //ì•„ì´í…œ ì´ë¦„
+    public int m_damage = 0;                    //ì•„ì´í…œ ê³µê²©ë ¥    
+    public int m_maganize = 0;                  //ì•„ì´í…œ ì´ì•Œê°¯ìˆ˜
+    public float m_expandScale = 0.0f;          //ë°œë‹¹ ëŠ˜ì–´ë‚˜ëŠ” ì‹­ìì„  í¬ê¸°
+    public float m_maxScale = 0.0f;             //ì‹­ìì„  ìµœëŒ€ í¬ê¸°
+    public float m_shrinkSpeed = 0.0f;          //ì‹­ìì„  ì¤„ì–´ë“œëŠ” ì†ë„
+    public float m_attackDelay = 0.0f;          //ê³µê²© ë”œë ˆì´
 
-    public bool m_isHave;
+    public bool m_isEquied;    
 
-    public ItemType m_itType = ItemType.Bat; //¾ÆÀÌÅÛ Å¸ÀÔ
-    public Sprite m_iconImg = null;   //Ä³¸¯ÅÍ ¾ÆÀÌÅÛ¿¡ »ç¿ëµÉ ÀÌ¹ÌÁö
-    public Vector2 m_iconSize = Vector2.one;  //¾ÆÀÌÅÛ ÀÌ¹ÌÁöÀÇ °¡·Î »çÀÌÁî, ¼¼·Î »çÀÌÁî
-    public string m_itemEx = "";      //¾ÆÀÌÅÛ ¼³¸í
-
+    public ItemType m_itType = ItemType.Null; //ì•„ì´í…œ íƒ€ì…
+    public Sprite m_iconImg = null;   //ìºë¦­í„° ì•„ì´í…œì— ì‚¬ìš©ë  ì´ë¯¸ì§€
+    public Vector2 m_iconSize = Vector2.one;  //ì•„ì´í…œ ì´ë¯¸ì§€ì˜ ê°€ë¡œ ì‚¬ì´ì¦ˆ, ì„¸ë¡œ ì‚¬ì´ì¦ˆ
+    public string m_itemEx = "";      //ì•„ì´í…œ ì„¤ëª…
+    
 
     public void SetType(ItemType itemType)
     {
         m_itType = itemType;
         if (itemType == ItemType.Bat)
         {
-            m_name = "¾ß±¸¹æ¸ÁÀÌ";
-            m_iconSize.x = 0.85f;   //ContentÀÇ cellÅ©±â 0.85¹è
-            m_iconSize.y = 1.0f;     //ContentÀÇ cellÅ©±â
-            m_damage = 20;
-            m_duration = 200;
-            m_attackDelay = 0.5f;          //°ø°İ µô·¹ÀÌ
-            m_isHave = false;
-            m_itemEx = "¾²ÀÓ¿¡ µû¶ó ½ºÆ÷Ã÷°¡ µÉÁö , ´À¿Í¸£¹°ÀÌ µÉÁö Á¤ÇØÁø´Ù. Áö±İÀº ÈÄÀÚÀÏÁöµµ..";
+            m_name = "ì•¼êµ¬ë°©ë§ì´";
+            m_iconSize.x = 0.85f;   //Contentì˜ cellí¬ê¸° 0.85ë°°
+            m_iconSize.y = 1.0f;     //Contentì˜ cellí¬ê¸°
+            m_damage = 20;            
+            m_attackDelay = 0.5f;          //ê³µê²© ë”œë ˆì´
+            m_maganize = 100;              //ë‚´êµ¬ë„ë¥¼ ì˜ë¯¸.
+            m_isEquied = false;
+            m_itemEx = "ì“°ì„ì— ë”°ë¼ ìŠ¤í¬ì¸ ê°€ ë ì§€ , ëŠì™€ë¥´ë¬¼ì´ ë ì§€ ì •í•´ì§„ë‹¤. ì§€ê¸ˆì€ í›„ìì¼ì§€ë„..";
 
             m_iconImg = Resources.Load("Weapons/Bat", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.M16)
         {
             m_name = "M16";
-            m_iconSize.x = 0.9f;    //ContentÀÇ cellÅ©±â 0.9¹è
-            m_iconSize.y = 0.8f;     //ContentÀÇ cellÅ©±â 0.8¹è
+            m_iconSize.x = 0.9f;    //Contentì˜ cellí¬ê¸° 0.9ë°°
+            m_iconSize.y = 0.8f;     //Contentì˜ cellí¬ê¸° 0.8ë°°
             m_damage = 30;
             m_maganize = 20;
-            m_expandScale = 0.12f;         //¹ß´ç ´Ã¾î³ª´Â ½ÊÀÚ¼± Å©±â
-            m_maxScale = 2.0f;            //½ÊÀÚ¼± ÃÖ´ë Å©±â
-            m_shrinkSpeed = 0.18f;         //½ÊÀÚ¼± ÁÙ¾îµå´Â ¼Óµµ
-            m_attackDelay = 0.1f;          //°ø°İ µô·¹ÀÌ
-            m_isHave = false;
-            m_itemEx = "¿¹ºñ±º ¾ÆÀú¾¾µéÀÇ »óÂ¡°úµµ °°Àº ¹«±â, ¸íÁß·ü.. »ı°¢º¸´Ù ¶Ù¾î³ª´Ù!";
+            m_expandScale = 0.12f;         //ë°œë‹¹ ëŠ˜ì–´ë‚˜ëŠ” ì‹­ìì„  í¬ê¸°
+            m_maxScale = 2.0f;            //ì‹­ìì„  ìµœëŒ€ í¬ê¸°
+            m_shrinkSpeed = 0.18f;         //ì‹­ìì„  ì¤„ì–´ë“œëŠ” ì†ë„
+            m_attackDelay = 0.1f;          //ê³µê²© ë”œë ˆì´
+            m_isEquied = false;
+            m_itemEx = "ì˜ˆë¹„êµ° ì•„ì €ì”¨ë“¤ì˜ ìƒì§•ê³¼ë„ ê°™ì€ ë¬´ê¸°, ëª…ì¤‘ë¥ .. ìƒê°ë³´ë‹¤ ë›°ì–´ë‚˜ë‹¤!";
             m_iconImg = Resources.Load("Weapons/M16", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.K2)
         {
             m_name = "K2";
-            m_iconSize.x = 1.0f;    //ContentÀÇ cellÅ©±â
-            m_iconSize.y = 0.7f;     //ContentÀÇ cellÅ©±â 0.7¹è
+            m_iconSize.x = 1.0f;    //Contentì˜ cellí¬ê¸°
+            m_iconSize.y = 0.7f;     //Contentì˜ cellí¬ê¸° 0.7ë°°
             m_damage = 30;
             m_maganize = 30;
-            m_expandScale = 0.15f;         //¹ß´ç ´Ã¾î³ª´Â ½ÊÀÚ¼± Å©±â
-            m_maxScale = 2.0f;            //½ÊÀÚ¼± ÃÖ´ë Å©±â
-            m_shrinkSpeed = 0.15f;         //½ÊÀÚ¼± ÁÙ¾îµå´Â ¼Óµµ
-            m_attackDelay = 0.1f;          //°ø°İ µô·¹ÀÌ
-            m_isHave = false;
+            m_expandScale = 0.15f;         //ë°œë‹¹ ëŠ˜ì–´ë‚˜ëŠ” ì‹­ìì„  í¬ê¸°
+            m_maxScale = 2.0f;            //ì‹­ìì„  ìµœëŒ€ í¬ê¸°
+            m_shrinkSpeed = 0.15f;         //ì‹­ìì„  ì¤„ì–´ë“œëŠ” ì†ë„
+            m_attackDelay = 0.1f;          //ê³µê²© ë”œë ˆì´
+            m_isEquied = false;
 
-            m_itemEx = "Çö¿ªµéÀÇ »óÂ¡ÀÌÀÚ ¸ø´Ù·ç´Â ÇÑ±¹³²ÀÚ°¡ ¾øÀ» Á¤µµ, ±Ùµ¥ ¸ñ¼ûÃ³·³ ¼ÒÁßÇÑ ÀÌ ¹«±â°¡ ¿Ö ¶³¾îÁ®ÀÖÁö?";
+            m_itemEx = "í˜„ì—­ë“¤ì˜ ìƒì§•ì´ì ëª»ë‹¤ë£¨ëŠ” í•œêµ­ë‚¨ìê°€ ì—†ì„ ì •ë„, ê·¼ë° ëª©ìˆ¨ì²˜ëŸ¼ ì†Œì¤‘í•œ ì´ ë¬´ê¸°ê°€ ì™œ ë–¨ì–´ì ¸ìˆì§€?";
             m_iconImg = Resources.Load("Weapons/K2", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.Ak47)
         {
             m_name = "AK47";
-            m_iconSize.x = 0.946f;     //¹ÌÁ¤
-            m_iconSize.y = 1.0f;     //¹ÌÁ¤
+            m_iconSize.x = 0.946f;     //ë¯¸ì •
+            m_iconSize.y = 1.0f;     //ë¯¸ì •
             m_damage = 40;
             m_maganize = 30;
-            m_expandScale = 0.28f;         //¹ß´ç ´Ã¾î³ª´Â ½ÊÀÚ¼± Å©±â
-            m_maxScale = 3.0f;            //½ÊÀÚ¼± ÃÖ´ë Å©±â
-            m_shrinkSpeed = 0.25f;         //½ÊÀÚ¼± ÁÙ¾îµå´Â ¼Óµµ
-            m_attackDelay = 0.15f;          //°ø°İ µô·¹ÀÌ
-            m_isHave = false;
+            m_expandScale = 0.28f;         //ë°œë‹¹ ëŠ˜ì–´ë‚˜ëŠ” ì‹­ìì„  í¬ê¸°
+            m_maxScale = 3.0f;            //ì‹­ìì„  ìµœëŒ€ í¬ê¸°
+            m_shrinkSpeed = 0.25f;         //ì‹­ìì„  ì¤„ì–´ë“œëŠ” ì†ë„
+            m_attackDelay = 0.15f;          //ê³µê²© ë”œë ˆì´
+            m_isEquied = false;
 
-            m_itemEx = "ÀÌÁ¦´Â ÃÑ±â¼ÒÀ¯¸¦ ÇÒ ¼ö ÀÖ´Â ³ª¶ó¿¡¼­´Â ¾Æ¹«³ª º¼ ¼ö ÀÖ´Â ¹«±â, ±Ùµ¥ ¿©±ä ÇÑ±¹ÀÎµ¥?";
+            m_itemEx = "ì´ì œëŠ” ì´ê¸°ì†Œìœ ë¥¼ í•  ìˆ˜ ìˆëŠ” ë‚˜ë¼ì—ì„œëŠ” ì•„ë¬´ë‚˜ ë³¼ ìˆ˜ ìˆëŠ” ë¬´ê¸°, ê·¼ë° ì—¬ê¸´ í•œêµ­ì¸ë°?";
             //m_IconImg = Resources.Load("IconImg/m0054", typeof(Sprite)) as Sprite;
         }
         else if (itemType == ItemType.SniperRifle)
         {
             m_name = "SniperRifle";
-            m_iconSize.x = 0.93f;     //¹ÌÁ¤
-            m_iconSize.y = 1.0f;     //¹ÌÁ¤
+            m_iconSize.x = 0.93f;     //ë¯¸ì •
+            m_iconSize.y = 1.0f;     //ë¯¸ì •
             m_damage = 150;
             m_maganize = 5;
-            m_attackDelay = 0.0f;          //°ø°İ µô·¹ÀÌ
-            m_isHave = false;
+            m_attackDelay = 0.0f;          //ê³µê²© ë”œë ˆì´
+            m_isEquied = false;
 
-            m_itemEx = "¿ø¼¦ ¿øÅ³? »ı°¢º¸´Ù ¾î·Á¿ï²¬";
+            m_itemEx = "ì›ìƒ· ì›í‚¬? ìƒê°ë³´ë‹¤ ì–´ë ¤ìš¸ê»„";
             //m_IconImg = Resources.Load("IconImg/m0423", typeof(Sprite)) as Sprite;
         }
-        else if(itemType == ItemType.Null)
+        else if (itemType == ItemType.Null)
         {
-           
+            
         }
+        
 
     }//public void SetType(CharType a_CrType)
 }
 
 public class GlobalValue
 {
-    public static string g_Unique_ID = "";  //À¯ÀúÀÇ °íÀ¯¹øÈ£
-    public static string g_NickName = "";   //À¯ÀúÀÇ º°¸í
-    public static int g_BestScore = 0;      //°ÔÀÓÁ¡¼ö
-    public static int g_UserGold = 0;       //°ÔÀÓ¸Ó´Ï
-    public static int g_Exp = 0;            //°æÇèÄ¡ Experience
-    public static int g_Level = 0;          //·¹º§
-
-    public static Dictionary<ItemType, ItemInfo> g_itemDic = new Dictionary<ItemType, ItemInfo>();
-
-    public static void InitData()       //µñ¼Å³Ê¸®¿¡ ¾ÆÀÌÅÛ Á¤º¸ ÀúÀå
-    {
+    public static string g_Unique_ID = "";  //ìœ ì €ì˜ ê³ ìœ ë²ˆí˜¸
+    public static string g_NickName = "";   //ìœ ì €ì˜ ë³„ëª…
+    public static int g_BestScore = 0;      //ê²Œì„ì ìˆ˜
+    public static int g_UserGold = 0;       //ê²Œì„ë¨¸ë‹ˆ
+    public static int g_Exp = 0;            //ê²½í—˜ì¹˜ Experience
+    public static int g_Level = 0;          //ë ˆë²¨
+        
+    // 1 2 3 4 fasle
+    public static List<ItemInfo> g_userItem = new List<ItemInfo>();         //í”Œë ˆì´ì–´ê°€ ì†Œìœ í•˜ê³  ìˆëŠ” ì•„ì´í…œ ëª©ë¡
+    
+    public static Dictionary<ItemType, ItemInfo> g_itemDic = new Dictionary<ItemType, ItemInfo>();      //ì „ì²´ ì•„ì´í…œ ì •ë³´ë¥¼ ë‹´ì„ ë”•ì…”ë„ˆë¦¬
+        
+    public static void InitData()       //ë”•ì…”ë„ˆë¦¬ì— ì•„ì´í…œ ì •ë³´ ì €ì¥
+    {        
         if (0 < g_itemDic.Count)
             return;
 
@@ -137,8 +141,9 @@ public class GlobalValue
         {
             a_ItemList = new ItemInfo();
             a_ItemList.SetType((ItemType)ii);
-            g_itemDic.Add((ItemType)ii, a_ItemList);
-        }
+            g_itemDic.Add((ItemType)ii, a_ItemList);            
+        }        
     }//public static void InitData()
 
 }
+

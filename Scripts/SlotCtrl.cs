@@ -4,111 +4,72 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class SlotCtrl : MonoBehaviour 
 {
-    public Image itemImage;
-    public ItemType item;
-    public static int itemCount; // 획득한 아이템의 개수
-    public int UniqueitemNum;   // 이 슬롯 아이템의 넘버
-    public static Vector3 Slottr;
+    public ItemInfo m_itemInfo = new ItemInfo();
+
+    private ItemInfo Change = new ItemInfo();
+
+    public float m_Timer = 0;           // FillAmount 효과를 위한 변수
+    public float m_CoolTimer = 2;       // 장착하는 시간
+
+    public bool m_isClicked = false;    // 버튼 클릭 유무
 
 
-    void Awake()
-    {
-        itemImage = this.gameObject.GetComponent<Image>();
-        UniqueitemNum = itemCount;
 
-
+    void Start()
+    {      
+        
+        ChangeImg();        //이미지 변경 함수 실행        
     }
 
-
-    // 마우스 드래그가 시작 됐을 때 발생하는 이벤트
-    public void OnBeginDrag(PointerEventData eventData)
+    void Update()
     {
-        DragSlot.instance.dragSlot = this;
-        DragSlot.instance.DragSetImage(itemImage);
-        DragSlot.instance.transform.position = eventData.position;
-
+        CoolTime();
     }
-
-    // 마우스 드래그 중일 때 계속 발생하는 이벤트
-    public void OnDrag(PointerEventData eventData)
+ 
+    public void ChangeImg()
     {
-        DragSlot.instance.transform.position = eventData.position;
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        if (DragSlot.instance.dragSlot != null)
+        if (m_itemInfo.m_itType == ItemType.Null)       //해당 슬롯이 비어있는 슬롯이면
         {
-            ChangeSlot();
+            transform.GetChild(0).GetComponent<Image>().sprite = null;      //슬롯의 이미지를 빈 이미지로
+        }
+        else if (m_itemInfo.m_itType != ItemType.Null)  //해당 슬롯이 무기정보가 들어있는 슬롯이면
+        {
+            if (transform.childCount != 0)          //일반 슬롯 일경우 차일드의 이미지 변경
+                transform.GetChild(0).GetComponent<Image>().sprite = m_itemInfo.m_iconImg;
+            else                                   //드래그 슬롯 일경우 본인의 이미지 변경
+                this.GetComponent<Image>().sprite = m_itemInfo.m_iconImg;
         }
     }
 
-    // 마우스 드래그가 끝났을 때 발생하는 이벤트
-    public void OnEndDrag(PointerEventData eventData)
+    public void CoolTime()
     {
-
-        DragSlot.instance.SetColor(0);
-        DragSlot.instance.dragSlot = null;
-        DragSlot.instance.transform.position = Slottr;
-
+        if (m_itemInfo.m_itType != ItemType.Null && m_isClicked == true)
+        {            
+            if (m_Timer >= 0 && m_Timer <= 2)
+            {
+                m_Timer += Time.deltaTime;                
+                transform.GetChild(1).GetComponent<Image>().fillAmount = m_Timer / m_CoolTimer;
+                if (m_Timer > 1.9f)                              // 쿨타임이 다 돌았을 때..
+                {
+                    Change = WeaponSlotCtrl.instance.m_itemInfo;
+                    WeaponSlotCtrl.instance.m_itemInfo = m_itemInfo;
+                    WeaponSlotCtrl.instance.m_itemInfo.m_isEquied = true;
+                    WeaponSlotCtrl.instance.ChangeSlot();
+                    GlobalValue.g_userItem.Add(WeaponSlotCtrl.instance.m_itemInfo);
+                    m_itemInfo = Change;
+                    m_itemInfo.m_isEquied = false;         
+   
+                    ChangeImg();                        
+                    m_Timer = 0;                                 // 쿨타임 초기화
+                    transform.GetChild(1).GetComponent<Image>().fillAmount = 0;  // 쿨타임 효과 제자리
+                    m_isClicked = false;                           
+                                       
+                }
+             
+                
+            }
+        }
     }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-
-    }
-
-
-    private void ChangeSlot()
-    {
-        ItemType _tempItem = item;
-        int _tempItemCount = itemCount;
-
-        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.UniqueitemNum);
-
-        if ((int)_tempItem > 0 || (int)_tempItem <= (int)ItemType.ItemCount)
-            DragSlot.instance.dragSlot.AddItem(_tempItem);
-        else
-            DragSlot.instance.dragSlot.ClearSlot();
-    }
-
-    public void AddItem(ItemType _item, int _count = 1)
-    {
-        item = _item;
-        itemCount = _count;
-        itemImage.sprite = GlobalValue.g_itemDic[_item].m_iconImg;
-
-        //if (item.itemType != Item.ItemType.Equipment)
-        //{
-        //    go_CountImage.SetActive(true);
-        //    text_Count.text = itemCount.ToString();
-        //}
-        //else
-        //{
-        //    text_Count.text = "0";
-        //    go_CountImage.SetActive(false);
-        //}
-
-        SetColor(1);
-    }
-
-    private void ClearSlot()
-    {
-        item = ItemType.Bat;
-        itemCount = 0;
-        itemImage.sprite = null;
-        SetColor(0);
-
-
-    }
-
-    private void SetColor(float _alpha)
-    {
-        Color color = itemImage.color;
-        color.a = _alpha;
-        itemImage.color = color;
-    }
-
 }
