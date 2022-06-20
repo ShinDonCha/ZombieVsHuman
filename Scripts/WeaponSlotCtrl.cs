@@ -1,20 +1,20 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponSlotCtrl : MonoBehaviour
 {
-    public ItemInfo m_itemInfo = new ItemInfo();    // Weapon Ã¢ÀÇ ¾ÆÀÌÅÛ Á¤º¸
+    public ItemInfo m_itemInfo = new ItemInfo();    // Weapon ì°½ì˜ ì•„ì´í…œ ì •ë³´
 
-    public static WeaponSlotCtrl instance = null;   // ½ºÅ©¸³Æ® ÀüÃ¼¸¦ »ó¼Ó¹Ş±âÀ§ÇÑ º¯¼ö
+    public static WeaponSlotCtrl instance = null;   // ìŠ¤í¬ë¦½íŠ¸ ì „ì²´ë¥¼ ìƒì†ë°›ê¸°ìœ„í•œ ë³€ìˆ˜
 
-    private ItemInfo Change = new ItemInfo();       // º¯°æÇÒ ¾ÆÀÌÅÛ ÀÎÆ÷¸¦ ÀúÀåÇÏ´Â ÀÓ½Ã º¯¼ö
+    private ItemInfo Change = new ItemInfo();       // ë³€ê²½í•  ì•„ì´í…œ ì¸í¬ë¥¼ ì €ì¥í•˜ëŠ” ì„ì‹œ ë³€ìˆ˜
 
-    private int m_invenSlot = 0;                    // Equied°¡ ¾Æ´Ñ ÀÎº¥Åä¸® ½½·ÔÀ» °Ë»çÇÏ±â À§ÇÑ Á¤¼ö º¯¼ö
-    public float m_Timer = 0;                       // FillAmount È¿°ú¸¦ À§ÇÑ º¯¼ö
-    public float m_CoolTimer = 2;                   // ÀåÂøÇÏ´Â ½Ã°£
-    public bool m_isClicked = false;                // Å¬¸¯À» ¹Ş¾ÒÀ» ¶§..
+    private int m_invenSlot = 0;                    // Equiedê°€ ì•„ë‹Œ ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ì„ ê²€ì‚¬í•˜ê¸° ìœ„í•œ ì •ìˆ˜ ë³€ìˆ˜
+    public float m_Timer = 0;                       // FillAmount íš¨ê³¼ë¥¼ ìœ„í•œ ë³€ìˆ˜
+    public float m_CoolTimer = 2;                   // ì¥ì°©í•˜ëŠ” ì‹œê°„
+    public bool m_isClicked = false;                // í´ë¦­ì„ ë°›ì•˜ì„ ë•Œ..
 
     public GameObject Inventory = null;
 
@@ -46,13 +46,13 @@ public class WeaponSlotCtrl : MonoBehaviour
             {
                 m_Timer += Time.deltaTime;
                 transform.GetChild(2).GetComponent<Image>().fillAmount = m_Timer / m_CoolTimer;
-                if (m_Timer > 1.9f)                              // ÄğÅ¸ÀÓÀÌ ´Ù µ¹¾ÒÀ» ¶§..
+                if (m_Timer > 1.9f)                              // ì¿¨íƒ€ì„ì´ ë‹¤ ëŒì•˜ì„ ë•Œ..
                 {
                     foreach(var ivPanelSlot in GlobalValue.g_userItem)
                     {
                         if (ivPanelSlot.m_isEquied == false)
                             m_invenSlot++;                        
-                    }   //ÀÎº¥Åä¸® ÆĞ³Î¿¡¸¸ ÀÖ´Â ½½·ÔÀ» °Ë»çÇÏ±â À§ÇÑ ¹İº¹¹®
+                    }   //ì¸ë²¤í† ë¦¬ íŒ¨ë„ì—ë§Œ ìˆëŠ” ìŠ¬ë¡¯ì„ ê²€ì‚¬í•˜ê¸° ìœ„í•œ ë°˜ë³µë¬¸
                     
                     SlotCtrl IvChild = new SlotCtrl();
                     
@@ -76,8 +76,8 @@ public class WeaponSlotCtrl : MonoBehaviour
                     m_itemInfo = Change;
                     m_itemInfo.m_isEquied = true;
                     ChangeSlot();
-                    m_Timer = 0;                                 // ÄğÅ¸ÀÓ ÃÊ±âÈ­
-                    transform.GetChild(2).GetComponent<Image>().fillAmount = 0;  // ÄğÅ¸ÀÓ È¿°ú Á¦ÀÚ¸®
+                    m_Timer = 0;                                 // ì¿¨íƒ€ì„ ì´ˆê¸°í™”
+                    transform.GetChild(2).GetComponent<Image>().fillAmount = 0;  // ì¿¨íƒ€ì„ íš¨ê³¼ ì œìë¦¬
                     m_isClicked = false;
                 }
 

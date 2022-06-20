@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +12,7 @@ public class CoolTimeCtrl : MonoBehaviour ,IPointerClickHandler
     private WeaponSlotCtrl m_WeaponSlotCtrl = null;
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right)         // ½½·Ô¿¡ ¸¶¿ì½º ¿À¸¥ÂÊ Å¬¸¯½Ã..
+        if (eventData.button == PointerEventData.InputButton.Right)         // ìŠ¬ë¡¯ì— ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ í´ë¦­ì‹œ..
         {          
             if (eventData.pointerCurrentRaycast.gameObject.name.Contains("Slot"))
             {

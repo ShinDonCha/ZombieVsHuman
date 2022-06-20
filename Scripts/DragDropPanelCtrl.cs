@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,13 +6,13 @@ using UnityEngine.EventSystems;
 
 public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    public GameObject m_dragSlot = null;            //µå·¡±× ½½·Ô °ÔÀÓ¿ÀºêÁ§Æ®¸¦ ´ãÀ» º¯¼ö    
+    public GameObject m_dragSlot = null;            //ë“œë˜ê·¸ ìŠ¬ë¡¯ ê²Œì„ì˜¤ë¸Œì íŠ¸ë¥¼ ë‹´ì„ ë³€ìˆ˜    
     
     public static DragDropPanelCtrl instance = null;    
 
-    private SlotCtrl m_dragSlotCtrl = null;         //µå·¡±× ½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
-    private SlotCtrl m_slotCtrl = null;             //OnBeginDrag µÇ´Â ´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
-    private SlotCtrl m_targetSlotCtrl = null;       //OnDrop µÇ´Â ´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
+    private SlotCtrl m_dragSlotCtrl = null;         //ë“œë˜ê·¸ ìŠ¬ë¡¯ì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
+    private SlotCtrl m_slotCtrl = null;             //OnBeginDrag ë˜ëŠ” ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
+    private SlotCtrl m_targetSlotCtrl = null;       //OnDrop ë˜ëŠ” ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
     
 
     void Awake()
@@ -26,37 +26,37 @@ public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler,
 
     public void OnBeginDrag(PointerEventData eventData)
     {        
-        if (eventData.pointerCurrentRaycast.gameObject.name.Contains("Slot"))        //µå·¡±× ½ÃÀÛ ½Ã ´­¸° °ÔÀÓ¿ÀºêÁ§Æ®°¡ ÀÏ¹İ ½½·ÔÀÌ¶ó¸é
+        if (eventData.pointerCurrentRaycast.gameObject.name.Contains("Slot"))        //ë“œë˜ê·¸ ì‹œì‘ ì‹œ ëˆŒë¦° ê²Œì„ì˜¤ë¸Œì íŠ¸ê°€ ì¼ë°˜ ìŠ¬ë¡¯ì´ë¼ë©´
         {            
-            m_slotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();       //´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â
+            m_slotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();       //ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
 
-            if (m_slotCtrl.m_itemInfo.m_itType != ItemType.Null)            //´ë»óÀÌ ¹«±âÁ¤º¸¸¦ Áö´Ï°í ÀÖ´Ù¸é
+            if (m_slotCtrl.m_itemInfo.m_itType != ItemType.Null)            //ëŒ€ìƒì´ ë¬´ê¸°ì •ë³´ë¥¼ ì§€ë‹ˆê³  ìˆë‹¤ë©´
             {
-                m_dragSlot.SetActive(true);                                 //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ®¸¦ Å°±â
-                m_dragSlotCtrl.m_itemInfo = m_slotCtrl.m_itemInfo;          //µå·¡±× ½½·Ô¿¡ ¹«±âÁ¤º¸¸¦ ´ã±â
+                m_dragSlot.SetActive(true);                                 //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ë¥¼ í‚¤ê¸°
+                m_dragSlotCtrl.m_itemInfo = m_slotCtrl.m_itemInfo;          //ë“œë˜ê·¸ ìŠ¬ë¡¯ì— ë¬´ê¸°ì •ë³´ë¥¼ ë‹´ê¸°
                 m_dragSlotCtrl.ChangeImg();
             }                
         }             
     }
 
-    // ¸¶¿ì½º µå·¡±× ÁßÀÏ ¶§ °è¼Ó ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ ì¤‘ì¼ ë•Œ ê³„ì† ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
     public void OnDrag(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
+        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
             return;
 
-        m_dragSlot.transform.position = eventData.position;             //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ®ÀÇ À§Ä¡¸¦ ¸¶¿ì½ºÀÇ À§Ä¡·Î º¯°æ
+        m_dragSlot.transform.position = eventData.position;             //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜ë¥¼ ë§ˆìš°ìŠ¤ì˜ ìœ„ì¹˜ë¡œ ë³€ê²½
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
+        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
             return;
 
-        if (eventData.pointerCurrentRaycast.gameObject.CompareTag("UserItem"))       //ÀÎº¥Åä¸® ½½·Ô¿¡ µå¶øÇßÀ¸¸é
+        if (eventData.pointerCurrentRaycast.gameObject.CompareTag("UserItem"))       //ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ì— ë“œëí–ˆìœ¼ë©´
         {
-            m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();     //´ë»ó ½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â
-            ChangeSlot();           //½½·ÔÀÇ Á¤º¸ ¹Ù²Ù±â ÇÔ¼ö
+            m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();     //ëŒ€ìƒ ìŠ¬ë¡¯ì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+            ChangeSlot();           //ìŠ¬ë¡¯ì˜ ì •ë³´ ë°”ê¾¸ê¸° í•¨ìˆ˜
         }
         else if (eventData.pointerCurrentRaycast.gameObject.CompareTag("RootItem"))
         {
@@ -67,20 +67,20 @@ public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler,
         
     }
 
-    // ¸¶¿ì½º µå·¡±×°¡ ³¡³µÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
+    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ê°€ ëë‚¬ì„ ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
+        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
             return;
 
-        m_dragSlotCtrl.m_itemInfo = null;     //µå·¡±× ½½·ÔÀÇ ¾ÆÀÌÅÛ Á¤º¸ ÃÊ±âÈ­
-        m_targetSlotCtrl = null;              //´ã¾Ò´ø OnDrop ´ë»óÀÇ Á¤º¸ ÃÊ±âÈ­
-        m_slotCtrl = null;                    //´ã¾Ò´ø OnBeginDrag ´ë»óÀÇ Á¤º¸ ÃÊ±âÈ­
-        m_dragSlot.SetActive(false);          //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ® ²ô±â        
+        m_dragSlotCtrl.m_itemInfo = null;     //ë“œë˜ê·¸ ìŠ¬ë¡¯ì˜ ì•„ì´í…œ ì •ë³´ ì´ˆê¸°í™”
+        m_targetSlotCtrl = null;              //ë‹´ì•˜ë˜ OnDrop ëŒ€ìƒì˜ ì •ë³´ ì´ˆê¸°í™”
+        m_slotCtrl = null;                    //ë‹´ì•˜ë˜ OnBeginDrag ëŒ€ìƒì˜ ì •ë³´ ì´ˆê¸°í™”
+        m_dragSlot.SetActive(false);          //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ ë„ê¸°        
     }
    
 
-    private void ChangeSlot()           //½½·ÔÀÇ Á¤º¸ ¹Ù²ãÁÖ±â
+    private void ChangeSlot()           //ìŠ¬ë¡¯ì˜ ì •ë³´ ë°”ê¿”ì£¼ê¸°
     {
         m_slotCtrl.m_itemInfo = m_targetSlotCtrl.m_itemInfo;                
         m_targetSlotCtrl.m_itemInfo = m_dragSlotCtrl.m_itemInfo;
