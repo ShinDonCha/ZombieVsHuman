@@ -13,6 +13,8 @@ public class SlotCtrl : MonoBehaviour
     public float m_Timer = 0;           // FillAmount 효과를 위한 변수
     public float m_CoolTimer = 2;       // 장착하는 시간
 
+    public int m_UniqueNum = 0;     //슬롯 구별하는 정수변수
+
     public bool m_isClicked = false;    // 버튼 클릭 유무
 
 

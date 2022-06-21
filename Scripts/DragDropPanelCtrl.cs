@@ -13,13 +13,16 @@ public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler,
     private SlotCtrl m_dragSlotCtrl = null;         //드래그 슬롯의 SlotCtrl 스크립트를 가져올 변수
     private SlotCtrl m_slotCtrl = null;             //OnBeginDrag 되는 대상의 SlotCtrl 스크립트를 가져올 변수
     private SlotCtrl m_targetSlotCtrl = null;       //OnDrop 되는 대상의 SlotCtrl 스크립트를 가져올 변수
-    
 
+    public GameObject m_Player = null;               //플레이어 주변에 아이템을 스폰하기 위한 변수
+    public GameObject m_item = null;                 //인벤토리 슬롯에서 루트 패널로 옮기면 주변에 아이템 생성
+
+    private int RandomSpawn = 0;                    //플레이어 주변 랜덤스폰을 위한 정수형 변수
     void Awake()
     {
         instance = this;
         m_dragSlotCtrl = m_dragSlot.GetComponent<SlotCtrl>();
-
+        
        
     }
 
@@ -57,12 +60,43 @@ public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler,
         {
             m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();     //대상 슬롯의 SlotCtrl 스크립트 가져오기
             ChangeSlot();           //슬롯의 정보 바꾸기 함수
+            //여기다가 루트패널에 관련된 월드맵의 아이템 파괴시켜야됌.
+            //슬롯 컨트롤의 유니크 변수와 아이템 컨트롤의 유니크 변수가 맞을때.. 그 아이템이 Destory() 되게함.
+            foreach(var root in PlayerCtrl.inst.m_itemList)
+            {
+                if (root.GetComponent<ItemCtrl>().m_isVisible == true)
+                {
+                    if(root.GetComponet<ItemCtrl>().m_UniqueNum == m_targetSlotCtrl.m_UniqueNum)
+                    Destory()   // 없앨 목표를 어떻게 지정해야될지 모르겠음..?
+                }
+
+            }
+            
+
         }
         else if (eventData.pointerCurrentRaycast.gameObject.CompareTag("RootItem"))
         {
             m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();
             ChangeSlot();
-            
+            RandomSpawn = Random.Range(0, 3);
+            GameObject a_item = Instantiate(m_item);
+            if (RandomSpawn == 0)
+            {                
+                a_item.transform.position = m_Player.transform.position + new Vector3(1,1,0);
+            }
+            else if(RandomSpawn == 1)
+            {
+                a_item.transform.position = m_Player.transform.position + new Vector3(0, 1, 1);
+            }
+            else if (RandomSpawn == 2)
+            {
+                a_item.transform.position = m_Player.transform.position + new Vector3(-1, 1, 0);
+            }
+            else if (RandomSpawn == 3)
+            {
+                a_item.transform.position = m_Player.transform.position + new Vector3(0, 1, -1);
+            }
+            RandomSpawn = 0;
         }
         
     }

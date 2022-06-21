@@ -7,7 +7,10 @@ public class ItemCtrl : MonoBehaviour
 {
     [HideInInspector] public ItemType m_itemType;
 
+    public bool m_isVisible = false;
     public GameObject[] m_itemInven = null;
+
+    public int m_UniqueNum = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -52,5 +55,10 @@ public class ItemCtrl : MonoBehaviour
             
 
         }
+    }
+
+    public void OnRooted()
+    {
+        Destroy(this.gameObject);
     }
 }
