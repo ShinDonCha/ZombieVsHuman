@@ -4,13 +4,12 @@ using UnityEngine;
 using TooManyCrosshairs;
 
 public class WeaponCtrl : MonoBehaviour
-{
+{                       
     [HideInInspector] public GameObject m_crossHair = null;       //instantiate한 크로스헤어 담을 변수
-    private CrosshairCtrl m_crossCtrl = null;       //UICanvas의 CrossHair에 붙은 CrossHairCtrl스크립트를 담을 변수
-
-    //---- 공통적으로 필요한 부분
-    [HideInInspector] public ItemType m_weaponType;
-
+    [HideInInspector] public CrosshairCtrl m_crossCtrl = null;       //UICanvas의 CrossHair에 붙은 CrossHairCtrl스크립트를 담을 변수
+        
+    [HideInInspector] public ItemName m_weaponType;                
+    
     private GameObject m_UICanvas = null;   //UICanvas 담을 변수
 
     //----- 아이템이 총일 때 필요한 변수
@@ -20,13 +19,12 @@ public class WeaponCtrl : MonoBehaviour
     [HideInInspector] public bool m_zoomInOut = false;           //true일 때 줌인
     //----- 아이템이 총일 때 필요한 변수
 
-    private bool m_misFire = false;               //공격 불가능 상태    
-    private float m_attackDelay = 0.0f;           //다음 공격까지 딜레이
-    private float m_shootTimer = 0.0f;            //공격딜레이 계산용 변수     
+    [HideInInspector] public bool m_misFire = false;               //공격 불가능 상태    
+    [HideInInspector] public float m_attackDelay = 0.0f;           //다음 공격까지 딜레이
+    //private float m_shootTimer = 0.0f;            //공격딜레이 계산용 변수     
 
     private RaycastHit m_hitInfo;               //광선에 맞은 대상
-    Vector3 m_targetPos = Vector3.zero;         //타격점을 담는 변수
-    //---- 공통적으로 필요한 부분
+    Vector3 m_targetPos = Vector3.zero;         //타격점을 담는 변수    
 
     void Awake()
     {
@@ -38,11 +36,25 @@ public class WeaponCtrl : MonoBehaviour
     {
         //----- 어떤 무기인지에 따라서 타입 바꿔주기
         if (this.gameObject.name.Contains("K2c1"))
-            m_weaponType = ItemType.K2;
+        {
+            m_weaponType = ItemName.K2;
+            PlayerCtrl.inst.m_getGun = true;            //플레이어의 현재 무기가 총임
+        }
         else if (this.gameObject.name.Contains("M16"))
-            m_weaponType = ItemType.M16;
+        {
+            m_weaponType = ItemName.M16;
+            PlayerCtrl.inst.m_getGun = true;           //플레이어의 현재 무기가 총임
+        }
         else if (this.gameObject.name.Contains("Bat"))
-            m_weaponType = ItemType.Bat;
+        {
+            m_weaponType = ItemName.Bat;
+            PlayerCtrl.inst.m_getGun = false;         //플레이어의 현재 무기가 총이 아님
+        }
+        //else if (this.gameObject.name.Contains("Fist"))
+        //{
+        //    m_weaponType = ItemType.Fist;
+        //    PlayerCtrl.inst.m_getGun = false;         //플레이어의 현재 무기가 총이 아님
+        //}
         //----- 어떤 무기인지에 따라서 타입 바꿔주기        
 
         m_attackDelay = GlobalValue.g_itemDic[m_weaponType].m_attackDelay;          //무기의 공격 딜레이 설정
@@ -56,73 +68,70 @@ public class WeaponCtrl : MonoBehaviour
         m_crossCtrl.SetShrinkSpeed(GlobalValue.g_itemDic[m_weaponType].m_shrinkSpeed);  //크로스헤어 expanding의 scale 감소 속도 설정
         m_crossCtrl.SetReloadSpeed(0.1f);                                               //재장전 속도 설정        
         m_crossCtrl.m_expandSize = GlobalValue.g_itemDic[m_weaponType].m_expandScale;   //발당 증가하는 expanding의 scale 사이즈
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        //---- 공격 가능 상태인지 확인
-        if (m_crossCtrl.m_isReloading == true
-            || PlayerCtrl.inst.m_animController.GetBool("Roll") == true
-            || 5 < PlayerCtrl.inst.m_animController.GetFloat("Speed")
-            || PlayerCtrl.inst.m_isRun == false
-            || PlayerCtrl.inst.m_isLoot == true)        //재장전상태나 구르기상태, 뛰기상태, 줍기상태일 경우 공격 불가 ( 줍기상태일때 코드추가 )
-        {
-            m_misFire = true;
-            
-        }
-        else
-        {
-            m_misFire = false;
-            m_crossHair.SetActive(true);
-        }
-            //---- 공격 가능 상태인지 확인
+        ////---- 공격 가능 상태인지 확인
+        //if (m_crossCtrl.m_isReloading == true
+        //    || PlayerCtrl.inst.m_animController.GetBool("Roll") == true
+        //    || 5 < PlayerCtrl.inst.m_animController.GetFloat("Speed")
+        //    || PlayerCtrl.inst.m_isRun == false)        //재장전상태나 구르기상태, 뛰기상태, 줍기상태일 경우 공격 불가
+        //    m_misFire = true;
+        //else
+        //    m_misFire = false;
+        ////---- 공격 가능 상태인지 확인
 
-        //----- 공격
-        if (0.0f < m_shootTimer)
-            m_shootTimer -= Time.deltaTime;
-        else if (m_shootTimer <= 0.0f)
-        {
-            m_shootTimer = 0.0f;
-            if (Input.GetMouseButton(0) && m_misFire == false)
-            {
-                if (m_weaponType == ItemType.Bat)         //무기가 야구방망이일 때
-                    Swing();
-                else                                    //무기가 총기류일 때
-                    Fire();
-            }
-        }
-        //----- 공격        
+        ////----- 공격
+        //if (0.0f < m_shootTimer)
+        //    m_shootTimer -= Time.deltaTime;
+        //else if (m_shootTimer <= 0.0f)
+        //{
+        //    m_shootTimer = 0.0f;
+        //    if (Input.GetMouseButton(0) && m_misFire == false)
+        //    {
+        //        if (m_weaponType == ItemType.Bat)         //무기가 야구방망이일 때
+        //            Swing();
+        //        else                                    //무기가 총기류일 때
+        //            Fire();
+        //    }
+        //}
+        ////----- 공격        
 
-        if (m_weaponType != ItemType.Bat)         //무기가 총일 경우만...
+        if (m_weaponType != ItemName.Bat)         //무기가 총일 경우만...
         {
-            CrossHairCon();
+            CrossHairCon();            
 
             if (Input.GetMouseButtonDown(1))
-                m_zoomInOut = !m_zoomInOut;
+                m_zoomInOut = !m_zoomInOut;            
         }
     }
 
-    void Swing()        //야구방망이로 공격할 때
-    {
-
+    public void Swing()        //야구방망이로 공격할 때
+    {        
+        PlayerCtrl.inst.m_animController.SetTrigger("Swing");
+        PlayerCtrl.inst.m_atkDelayTimer = m_attackDelay;
     }
 
-    void Fire()         //총기류로 공격할 때 
+    public void Fire()         //총기류로 공격할 때 
     {
+        PlayerCtrl.inst.m_animController.SetTrigger("Fire");
+        PlayerCtrl.inst.m_atkDelayTimer = m_attackDelay;                        //다음 공격까지의 딜레이 설정
+
         //카메라의 정면으로부터 10.0f거리에 광선에 맞는 대상이 있을경우 그 대상을 타격점으로 잡음
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out m_hitInfo, 10.0f))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out m_hitInfo, 10.0f))  
             m_targetPos = m_hitInfo.point;
 
         //없을 경우 10.0f위치를 타격점으로 잡음
         else
-            m_targetPos = Camera.main.transform.position + (Camera.main.transform.forward * 10.0f);
-
+            m_targetPos = Camera.main.transform.position + (Camera.main.transform.forward * 10.0f);        
+        
         float a_RndX = 0.0f;            //총알이 빗나갈 각도를 저장할 변수
         float a_RndY = 0.0f;            //총알이 빗나갈 각도를 저장할 변수
 
-        float a_RndRange = (m_crossCtrl.m_expanding.transform.localScale.x - 1) * 6; //현재 크로스헤어의 늘어난 scale값 * 6
+        float a_RndRange = (m_crossCtrl.m_curExpanding.transform.localScale.x - 1) * 6; //현재 크로스헤어의 늘어난 scale값 * 6
         a_RndX = (int)Random.Range(-a_RndRange, a_RndRange);  //늘어난 scale값 * 6의 범위
         a_RndY = (int)Random.Range(-a_RndRange, a_RndRange);  //늘어난 scale값 * 6의 범위      
 
@@ -135,8 +144,7 @@ public class WeaponCtrl : MonoBehaviour
         a_bullet.transform.rotation = Quaternion.Euler(a_rot);          //총알 각도 변경
 
         m_crossCtrl.ExpandCrosshair();                       //크로스헤어의 expanding 확장
-        StartCoroutine(ShowMuzzleFlash());                   //총구 불빛 이펙트 출력
-        m_shootTimer = m_attackDelay;                        //다음 공격까지의 딜레이 설정
+        StartCoroutine(ShowMuzzleFlash());                   //총구 불빛 이펙트 출력        
     }
 
     IEnumerator ShowMuzzleFlash()
@@ -156,7 +164,7 @@ public class WeaponCtrl : MonoBehaviour
     }
 
     void CrossHairCon()
-    {
+    {       
         if (m_zoomInOut == true)             //줌인 상태        
             m_crossCtrl.SetMaxScale(1.3f);   //크로스헤어 expanding의 최대 scale 설정
 
@@ -168,7 +176,7 @@ public class WeaponCtrl : MonoBehaviour
 
         if (PlayerCtrl.inst.m_animController.GetBool("Roll") == true)            //플레이어가 구르기를 하면
         {
-            m_crossCtrl.m_expanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale;      //expanding의 scale을 maxScale 값으로
+            m_crossCtrl.m_curExpanding.rectTransform.localScale = m_crossCtrl.m_crosshairMaxScale;      //expanding의 scale을 maxScale 값으로
             StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expanding의 scale 감소 코루틴 시작
             StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expanding의 scale 감소 코루틴 정지
 
@@ -181,5 +189,5 @@ public class WeaponCtrl : MonoBehaviour
         //    StartCoroutine(m_crossCtrl.ShrinkCrosshair());              //expanding의 scale 감소 코루틴 시작
         //    StopCoroutine(m_crossCtrl.ShrinkCrosshair());               //expanding의 scale 감소 코루틴 정지
         //}
-    }
+    }    
 }

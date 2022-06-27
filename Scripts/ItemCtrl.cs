@@ -4,61 +4,40 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemCtrl : MonoBehaviour
-{
-    [HideInInspector] public ItemType m_itemType;
+{    
+    [HideInInspector] public ItemInfo m_itemInfo = new ItemInfo();
 
-    public bool m_isVisible = false;
     public GameObject[] m_itemInven = null;
-
-    public int m_UniqueNum = 0;
 
     // Start is called before the first frame update
     void Start()
-    {
-        int a_rnd = Random.Range(0, m_itemInven.Length);        //등록된 아이템 개수의 범위에서 랜덤 숫자 뽑기
-        GameObject a_go = Instantiate(m_itemInven[a_rnd]);      //랜덤으로 아이템 모델 결정
-        a_go.transform.SetParent(transform, false);             //Item오브젝트의 차일드로 붙이기
-
-        //----- 어떤 아이템인지에 따라서 타입 바꿔주기
-        if (a_go.name.Contains("K2"))
-            m_itemType = ItemType.K2;
-        else if (a_go.name.Contains("M16"))
-            m_itemType = ItemType.M16;
-        else if (a_go.name.Contains("Bat"))
-            m_itemType = ItemType.Bat;
-        //----- 어떤 아이템인지에 따라서 타입 바꿔주기
+    {       
+        ModelSet();                
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ModelSet()
     {
+        int a_Num = 0;        
+
+        switch (m_itemInfo.m_itName)
+        {
+            case ItemName.Bat:
+                a_Num = (int)ItemName.Bat;                
+                break;
+            case ItemName.M16:
+                a_Num = (int)ItemName.M16;
+                break;
+            case ItemName.K2:
+                a_Num = (int)ItemName.K2;
+                break;
+            case ItemName.Null:                 //특정된 아이템이 아닐경우 랜덤으로 생성
+                a_Num = Random.Range(0, m_itemInven.Length);
+                m_itemInfo.SetType((ItemName)a_Num);
+                break;                
+        }
         
-    }
-
-    //첫번째로 들어온 스프라이트에 bool형을 추가해서 true로 만든다?
-    //검사하는 함수를 만들어야하는데..
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            
-         
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.CompareTag("Player"))
-        {
-
-            
-
-        }
-    }
-
-    public void OnRooted()
-    {
-        Destroy(this.gameObject);
+        m_itemInfo.m_isDropped = true;
+        GameObject a_go = Instantiate(m_itemInven[a_Num]);          //아이템 정보에따라 정해진 외형으로 생성
+        a_go.transform.SetParent(transform, false);                 //아이템 프리팹의 차일드로 모델 넣기        
     }
 }

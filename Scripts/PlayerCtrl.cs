@@ -35,15 +35,21 @@ public class PlayerCtrl : MonoBehaviour
     float m_curHp = 0.0f;               //현재 체력
     float m_maxHp = 100.0f;             //최대 체력
     //----- 플레이어 스텟       
-    
+
+    //----- 플레이어 공격
+    [HideInInspector] public float m_atkDelayTimer = 0.0f;       //공격딜레이 계산용 변수  
+    //----- 플레이어 공격
+
     [HideInInspector] public bool m_isRun = true;       //움직일 수 있는 상태인지
     [HideInInspector] public bool m_isLoot = false;     //줍기 상태 인지     
+    [HideInInspector] public bool m_getGun = false;     //현재 무기가 총기인지
     public Image m_hpBar;                               //hpbar 이미지
                                                 
-    [HideInInspector] public List<ItemCtrl> m_itemList = new List<ItemCtrl>();     //현재 플레이어의 충돌반경에 들어온 아이템 리스트
+    [HideInInspector] public List<ItemInfo> m_itemList = new List<ItemInfo>();     //현재 플레이어의 충돌반경에 들어온 아이템 리스트    
 
-    [HideInInspector] public WeaponCtrl m_nowWeapon = null;     //현재 플레이어가 소지하고있는 무기
-    
+    [HideInInspector] public WeaponCtrl m_nowWeapon = null;     //현재 플레이어가 소지하고있는 무기    
+
+    [HideInInspector] public GameObject m_Test = null;
 
     // Start is called before the first frame update
     void Awake()
@@ -56,14 +62,15 @@ public class PlayerCtrl : MonoBehaviour
 
         m_moveSpeed = m_normalSpeed;
 
-        m_curHp = m_maxHp;
+        m_curHp = m_maxHp;        
     }
 
     // Update is called once per frame
     void Update()
     {
         Move();
-        Animation();        
+        Animation();
+        Attack();
     }
 
     void Move()
@@ -127,17 +134,19 @@ public class PlayerCtrl : MonoBehaviour
 
     void Animation()
     {
+        m_animController.SetBool("Get Gun", m_getGun);          //애니메이션 변경
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (m_itemList.Count <= 0)
                 return;
-
+            
             m_isLoot = !m_isLoot;
 
             m_animController.SetBool("isLoot", m_isLoot);       //줍기 애니메이션 제어
 
-            GameObject.Find("UICanvas").GetComponent<CanvasCtrl>().InvenPanel();
-        }
+            GameObject.Find("UICanvas").GetComponent<CanvasCtrl>().DDPanelSet(m_isLoot);        //슬롯 세팅
+        }        
 
         if (Input.GetKeyDown(KeyCode.Space))                //구르기 애니메이션 출력
             m_animController.SetBool("Roll", true);
@@ -148,9 +157,10 @@ public class PlayerCtrl : MonoBehaviour
 
         if (m_animController.GetCurrentAnimatorStateInfo(0).IsName("Loot_off"))     //줍기 애니메이션 끝날 때 이동 가능하게 변경
             if (0.9f < m_animController.GetCurrentAnimatorStateInfo(0).normalizedTime)
-                m_isRun = true;       
+                m_isRun = true;        
+                
 
-        //----- 회전 애니메이션
+        //----- 회전 애니메이션        //이부분 수정?
         if (h > 0)
         {
             m_aniRot += Time.deltaTime * 30;
@@ -179,6 +189,35 @@ public class PlayerCtrl : MonoBehaviour
         m_animController.SetFloat("Speed", m_aniSpeed);    //애니메이션 컨트롤러에 변수값 전달      
     }       
 
+    void Attack()
+    {
+        //---- 공격 가능 상태인지 확인
+        if (m_nowWeapon.m_crossCtrl.m_isReloading == true
+            || m_animController.GetBool("Roll") == true
+            || 5 < m_animController.GetFloat("Speed")
+            || m_isRun == false)        //재장전상태나 구르기상태, 뛰기상태, 줍기상태일 경우 공격 불가
+            m_nowWeapon.m_misFire = true;
+        else
+            m_nowWeapon.m_misFire = false;
+        //---- 공격 가능 상태인지 확인
+
+        //----- 공격
+        if (0.0f < m_atkDelayTimer)
+            m_atkDelayTimer -= Time.deltaTime;
+        else if (m_atkDelayTimer <= 0.0f)
+        {
+            m_atkDelayTimer = 0.0f;
+            if (Input.GetMouseButton(0) && m_nowWeapon.m_misFire == false)
+            {                
+                if (m_nowWeapon.m_weaponType == ItemName.Bat)         //무기가 야구방망이일 때
+                    m_nowWeapon.Swing();
+                else                                    //무기가 총기류일 때
+                    m_nowWeapon.Fire();
+            }
+        }
+        //----- 공격        
+    }
+
     public void TakeDamage(float damage)        //얘는 좀비의 공격을 맞았을 때 동작
     {
         if (m_curHp < 0.0f)
@@ -204,7 +243,18 @@ public class PlayerCtrl : MonoBehaviour
         // 3. 2번의 과정에서 씬상의 물건이름과 공용스크립트의 클래스와 비교하여 인벤토리에 옮기는 for문호출
         if (other.CompareTag("Item"))
         {
-            m_itemList.Add(other.GetComponent<ItemCtrl>());     //아이템 리스트에 추가
+            for (int i = 0; i < m_itemList.Count; i++)
+            {
+                if (m_itemList[i] == other.GetComponent<ItemCtrl>().m_itemInfo)
+                {                    
+                    return;
+                }
+            }
+
+            m_itemList.Add(other.GetComponent<ItemCtrl>().m_itemInfo);     //아이템 리스트에 추가
+            
+            //AddList(other.GetComponent<ItemCtrl>().m_itemInfo);
+            m_Test = other.gameObject;
         }
     }
 
@@ -213,8 +263,13 @@ public class PlayerCtrl : MonoBehaviour
         // 1. 물건과 관련된 UI가 꺼지게 만듦,
         // 2. 특정키가 작동안되게함.
         if (other.CompareTag("Item"))
-        {
-            m_itemList.Remove(other.GetComponent<ItemCtrl>());  //아이템 리스트에서 삭제   
+        {            
+            m_itemList.Remove(other.GetComponent<ItemCtrl>().m_itemInfo);  //아이템 리스트에서 삭제   
         }
-    }           
+    }        
+    
+    void AddList(ItemInfo a_itemInfo)
+    {
+        m_itemList.Add(a_itemInfo);
+    }
 }

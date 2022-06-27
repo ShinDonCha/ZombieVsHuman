@@ -11,19 +11,17 @@ public class CameraCtrl : MonoBehaviour
     private Vector3 m_changedRot = Vector3.zero;    //변경 된 회전값
     private Vector3 m_targetPos = Vector3.zero;     //카메라가 바라볼 위치
     private Quaternion m_calcRot;                   //변경 된 회전값(vector3)을 Quaternion으로 변경해서 담는 변수
-    private float m_rotSpeed = 50.0f;               //회전값 변경 속도
-                                                    //private float m_startRotx = 10.0f;           //처음에 설정하는 카메라 rotation x 값
-                                                    //---- 회전값 계산
-
+    private float m_rotSpeed = 50.0f;               //회전값 변경 속도    
+    //---- 회전값 계산
+    
     private float m_zoomDistance = 0.0f;      //플레이어와 카메라 사이의 거리       
     private float m_maxX = 60.0f;           //카메라 위아래 최대 rotation값
-
+    
 
     // Start is called before the first frame update
     void Start()
-    {
-        m_player = GameObject.Find("Player");
-        //m_player = transform.parent.gameObject;
+    {        
+        m_player = GameObject.Find("Player");        
 
         m_zoomDistance = 2.0f;
         transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -37,8 +35,8 @@ public class CameraCtrl : MonoBehaviour
 
         //------- 카메라 회전
         m_targetPos = m_player.transform.position;
-        m_targetPos.y += 2.8f;
-
+        m_targetPos.y += 2.8f;              
+        
         m_changedRot.y += Input.GetAxis("Mouse X") * m_rotSpeed * Time.deltaTime;
         m_changedRot.x -= Input.GetAxis("Mouse Y") * m_rotSpeed * Time.deltaTime;
 
@@ -60,8 +58,7 @@ public class CameraCtrl : MonoBehaviour
         //------- 플레이어 회전        
         Vector3 a_CamForward = transform.forward;
         a_CamForward.y = 0.0f;
-        m_player.transform.forward = a_CamForward;
+        m_player.transform.forward = a_CamForward;        
         //------- 플레이어 회전
     }
 }
-

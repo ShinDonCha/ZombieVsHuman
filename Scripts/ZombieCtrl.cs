@@ -31,7 +31,7 @@ public class ZombieCtrl : MonoBehaviour
 
     //---- 좀비 스텟
     float m_moveSpeed = 3.0f;                    //좀비 이동속도    
-    float m_traceDist = 15.0f;                   //좀비 추적거리
+    float m_traceDist = 1.5f;                   //좀비 추적거리
     float m_attackDist = 2.0f;                   //좀비 공격거리    
     float m_curHp = 0.0f;                       //좀비의 현재 체력
     float m_maxHp = 100.0f;                     //좀비의 최대 체력

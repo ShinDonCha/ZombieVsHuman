@@ -1,124 +1,173 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class DragDropPanelCtrl : MonoBehaviour ,IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class DragDropPanelCtrl : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    public GameObject m_dragSlot = null;            //ë“œë˜ê·¸ ìŠ¬ë¡¯ ê²Œì„ì˜¤ë¸Œì íŠ¸ë¥¼ ë‹´ì„ ë³€ìˆ˜    
-    
-    public static DragDropPanelCtrl instance = null;    
+    public GameObject m_dragSlot = null;            //µå·¡±× ½½·Ô °ÔÀÓ¿ÀºêÁ§Æ®¸¦ ´ãÀ» º¯¼ö
+    public GameObject m_slotObj = null;             //slot ÇÁ¸®ÆÕ  
 
-    private SlotCtrl m_dragSlotCtrl = null;         //ë“œë˜ê·¸ ìŠ¬ë¡¯ì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
-    private SlotCtrl m_slotCtrl = null;             //OnBeginDrag ë˜ëŠ” ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
-    private SlotCtrl m_targetSlotCtrl = null;       //OnDrop ë˜ëŠ” ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ë³€ìˆ˜
+    private SlotCtrl m_dragSlotCtrl = null;         //µå·¡±× ½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
+    private SlotCtrl m_slotCtrl = null;             //OnBeginDrag µÇ´Â ´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
+    private SlotCtrl m_targetSlotCtrl = null;       //OnDrop µÇ´Â ´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ®¸¦ °¡Á®¿Ã º¯¼ö
 
-    public GameObject m_Player = null;               //í”Œë ˆì´ì–´ ì£¼ë³€ì— ì•„ì´í…œì„ ìŠ¤í°í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
-    public GameObject m_item = null;                 //ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ì—ì„œ ë£¨íŠ¸ íŒ¨ë„ë¡œ ì˜®ê¸°ë©´ ì£¼ë³€ì— ì•„ì´í…œ ìƒì„±
+    public GameObject m_equipmentPanel = null;      //ÀåºñÆÇ³ÚÀ» ´ã´Â º¯¼ö
+    public GameObject m_invenPanel = null;          //ÀÎº¥ÆÇ³ÚÀ» ´ã´Â º¯¼ö
+    public GameObject m_rootPanel = null;           //·çÆ®ÆÇ³ÚÀ» ´ã´Â º¯¼ö  
 
-    private int RandomSpawn = 0;                    //í”Œë ˆì´ì–´ ì£¼ë³€ ëœë¤ìŠ¤í°ì„ ìœ„í•œ ì •ìˆ˜í˜• ë³€ìˆ˜
+    public GameObject m_worldItem = null;           //ÀÎ°ÔÀÓ »ó¿¡¼­ »ı¼ºµÉ ¾ÆÀÌÅÛ          
+    private int m_rootFullSlotCount = 28;           //rootPanel¿¡ ³Ö¾îÁÙ ¹öÆ° °³¼ö     
+
     void Awake()
     {
-        instance = this;
-        m_dragSlotCtrl = m_dragSlot.GetComponent<SlotCtrl>();
-        
-       
-    }
-
+        m_dragSlotCtrl = m_dragSlot.GetComponent<SlotCtrl>();                
+    }    
 
     public void OnBeginDrag(PointerEventData eventData)
-    {        
-        if (eventData.pointerCurrentRaycast.gameObject.name.Contains("Slot"))        //ë“œë˜ê·¸ ì‹œì‘ ì‹œ ëˆŒë¦° ê²Œì„ì˜¤ë¸Œì íŠ¸ê°€ ì¼ë°˜ ìŠ¬ë¡¯ì´ë¼ë©´
-        {            
-            m_slotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();       //ëŒ€ìƒì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+    {
+        if (eventData.pointerCurrentRaycast.gameObject.tag.Contains("Slot"))
+        {
+            m_slotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();       //´ë»óÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â            
 
-            if (m_slotCtrl.m_itemInfo.m_itType != ItemType.Null)            //ëŒ€ìƒì´ ë¬´ê¸°ì •ë³´ë¥¼ ì§€ë‹ˆê³  ìˆë‹¤ë©´
+            if (m_slotCtrl.m_itemInfo.m_itName != ItemName.Null)            //´ë»óÀÌ ¹«±âÁ¤º¸¸¦ Áö´Ï°í ÀÖ´Ù¸é
             {
-                m_dragSlot.SetActive(true);                                 //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ë¥¼ í‚¤ê¸°
-                m_dragSlotCtrl.m_itemInfo = m_slotCtrl.m_itemInfo;          //ë“œë˜ê·¸ ìŠ¬ë¡¯ì— ë¬´ê¸°ì •ë³´ë¥¼ ë‹´ê¸°
+                m_dragSlot.SetActive(true);                                 //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ®¸¦ Å°±â
+                m_dragSlotCtrl.m_itemInfo = m_slotCtrl.m_itemInfo;          //µå·¡±× ½½·Ô¿¡ ¹«±âÁ¤º¸¸¦ ´ã±â                
                 m_dragSlotCtrl.ChangeImg();
-            }                
-        }             
+            }
+        }           
     }
 
-    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ ì¤‘ì¼ ë•Œ ê³„ì† ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
+    // ¸¶¿ì½º µå·¡±× ÁßÀÏ ¶§ °è¼Ó ¹ß»ıÇÏ´Â ÀÌº¥Æ®
     public void OnDrag(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
+        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
             return;
 
-        m_dragSlot.transform.position = eventData.position;             //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜ë¥¼ ë§ˆìš°ìŠ¤ì˜ ìœ„ì¹˜ë¡œ ë³€ê²½
+        m_dragSlot.transform.position = eventData.position;             //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ®ÀÇ À§Ä¡¸¦ ¸¶¿ì½ºÀÇ À§Ä¡·Î º¯°æ
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
-            return;
+        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
+            return;       
 
-        if (eventData.pointerCurrentRaycast.gameObject.CompareTag("UserItem"))       //ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ì— ë“œëí–ˆìœ¼ë©´
+        if (eventData.pointerCurrentRaycast.gameObject.tag.Contains("Slot"))       //½½·Ô¿¡ µå¶øÇßÀ¸¸é
         {
-            m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();     //ëŒ€ìƒ ìŠ¬ë¡¯ì˜ SlotCtrl ìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
-            ChangeSlot();           //ìŠ¬ë¡¯ì˜ ì •ë³´ ë°”ê¾¸ê¸° í•¨ìˆ˜
-            //ì—¬ê¸°ë‹¤ê°€ ë£¨íŠ¸íŒ¨ë„ì— ê´€ë ¨ëœ ì›”ë“œë§µì˜ ì•„ì´í…œ íŒŒê´´ì‹œì¼œì•¼ëŒ.
-            //ìŠ¬ë¡¯ ì»¨íŠ¸ë¡¤ì˜ ìœ ë‹ˆí¬ ë³€ìˆ˜ì™€ ì•„ì´í…œ ì»¨íŠ¸ë¡¤ì˜ ìœ ë‹ˆí¬ ë³€ìˆ˜ê°€ ë§ì„ë•Œ.. ê·¸ ì•„ì´í…œì´ Destory() ë˜ê²Œí•¨.
-            foreach(var root in PlayerCtrl.inst.m_itemList)
-            {
-                if (root.GetComponent<ItemCtrl>().m_isVisible == true)
-                {
-                    if(root.GetComponet<ItemCtrl>().m_UniqueNum == m_targetSlotCtrl.m_UniqueNum)
-                    Destory()   // ì—†ì•¨ ëª©í‘œë¥¼ ì–´ë–»ê²Œ ì§€ì •í•´ì•¼ë ì§€ ëª¨ë¥´ê² ìŒ..?
-                }
+            m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();     //´ë»ó ½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â            
 
-            }
-            
+            if (m_targetSlotCtrl.gameObject.tag.Contains("Equip") &&                                 //´ë»ó ½½·ÔÀÌ ÀåºñÆÇ³Ú¾ÈÀÇ ½½·ÔÀÎµ¥ ÀåÂøÇÒ ¾ÆÀÌÅÛ°ú °°Àº Å¸ÀÔÀÌ ¾Æ´Ï¶ó¸é Ãë¼Ò
+                m_targetSlotCtrl.gameObject.name != m_dragSlotCtrl.m_itemInfo.m_itType.ToString())
+                return;
+           
+            m_slotCtrl.m_itemInfo = m_targetSlotCtrl.m_itemInfo;                 //ÀåÂøÇÏ·Á´Â ¾ÆÀÌÅÛ°ú ±âÁ¸ ÀåºñÃ¢ ¾ÆÀÌÅÛÀÇ Á¤º¸ ±³È¯
+            m_targetSlotCtrl.m_itemInfo = m_dragSlotCtrl.m_itemInfo;             //ÀåÂøÇÏ·Á´Â ¾ÆÀÌÅÛ°ú ±âÁ¸ ÀåºñÃ¢ ¾ÆÀÌÅÛÀÇ Á¤º¸ ±³È¯
 
+            m_slotCtrl.ChangeImg();                                              //¹Ù²ï Á¤º¸´ë·Î ÀÌ¹ÌÁö ±³Ã¼
+            m_targetSlotCtrl.ChangeImg();                                        //¹Ù²ï Á¤º¸´ë·Î ÀÌ¹ÌÁö ±³Ã¼
+            m_slotCtrl.SaveList(m_slotCtrl.transform.parent.gameObject);         //ÆÇ³Ú Á¾·ùº°·Î ¿¬µ¿µÈ ¸®½ºÆ®¿¡ Á¤º¸ ÀúÀå
+            m_targetSlotCtrl.SaveList(m_targetSlotCtrl.transform.parent.gameObject);    //ÆÇ³Ú Á¾·ùº°·Î ¿¬µ¿µÈ ¸®½ºÆ®¿¡ Á¤º¸ ÀúÀå
+
+            //DelItemList(m_slotCtrl);
+            //DelItemList(m_targetSlotCtrl);
         }
-        else if (eventData.pointerCurrentRaycast.gameObject.CompareTag("RootItem"))
+
+        // RootPanel ¿¡¼­ Inventory Panel·Î µå¶øÇÒ‹š ¿ùµå¸Ê¿¡ ÀÖ´Â ¾ÆÀÌÅÛ »èÁ¦
+        ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
+        for (int i = 0; i < a_items.Length; i++)
         {
-            m_targetSlotCtrl = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotCtrl>();
-            ChangeSlot();
-            RandomSpawn = Random.Range(0, 3);
-            GameObject a_item = Instantiate(m_item);
-            if (RandomSpawn == 0)
+            if (a_items[i].m_itemInfo.m_isDropped == false)
             {                
-                a_item.transform.position = m_Player.transform.position + new Vector3(1,1,0);
+                Destroy(a_items[i].gameObject);
             }
-            else if(RandomSpawn == 1)
-            {
-                a_item.transform.position = m_Player.transform.position + new Vector3(0, 1, 1);
-            }
-            else if (RandomSpawn == 2)
-            {
-                a_item.transform.position = m_Player.transform.position + new Vector3(-1, 1, 0);
-            }
-            else if (RandomSpawn == 3)
-            {
-                a_item.transform.position = m_Player.transform.position + new Vector3(0, 1, -1);
-            }
-            RandomSpawn = 0;
         }
-        
-    }
 
-    // ë§ˆìš°ìŠ¤ ë“œë˜ê·¸ê°€ ëë‚¬ì„ ë•Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸
+        // Inventory Panel ¿¡¼­ RootPanel ·Î µå¶øÇÒ ¶§ ¿ùµå¸Ê¿¡ ÀÖ´Â ¾ÆÀÌÅÛ »ı¼º
+        for (int WorlditCount = 0; WorlditCount < PlayerCtrl.inst.m_itemList.Count; WorlditCount++)
+        {
+            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_itName == ItemName.Null)         //ºó ½½·ÔÀÌ¸é ³Ñ¾î°¨
+                continue;
+            
+            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped == false)              //ÇöÀç µå¶øÁßÀÌÁö ¾ÊÀº(¸®½ºÆ®¿¡ Á¤º¸·Î¸¸ Á¸ÀçÇÏ´Â)½½·Ô¸¸ ¾ÆÀÌÅÛÀÇ ¿ÜÇü »ı¼º
+            {                
+                //»ı¼º
+                PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped = true;
+
+                int a_rndX = Random.Range(-1, 2);
+                int a_rndZ = Random.Range(-1, 2);
+                GameObject a_Item = Instantiate(m_worldItem);                                //¾ÆÀÌÅÛ ¸ğµ¨À» ´ãÀ» ¾ÆÀÌÅÛÇÁ¸®ÆÕ »ı¼º
+                a_Item.transform.position = PlayerCtrl.inst.transform.position + new Vector3(a_rndX, 1, a_rndZ);  //»ı¼ºÀ§Ä¡¸¦ ÇÃ·¹ÀÌ¾î ÁÖÀ§ÀÇ ·£´ı°ª À§Ä¡·Î ÇÔ
+                a_Item.GetComponent<ItemCtrl>().m_itemInfo = PlayerCtrl.inst.m_itemList[WorlditCount];            //»ı¼ºµÈ ¾ÆÀÌÅÛÀÇ Á¤º¸¸¦ ¸®½ºÆ®¿Í ÀÏÄ¡ÇÏ°Ô º¯°æ                              
+            }             
+        }
+        // Inventory Panel ¿¡¼­ RootPanel ·Î µå¶øÇÒ ¶§ ¿ùµå¸Ê¿¡ ÀÖ´Â ¾ÆÀÌÅÛ »ı¼º
+    }
+    // ¸¶¿ì½º µå·¡±×°¡ ³¡³µÀ» ¶§ ¹ß»ıÇÏ´Â ÀÌº¥Æ®
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (m_dragSlot.activeSelf == false)             //ì²˜ìŒ ë“œë˜ê·¸ ëŒ€ìƒì´ ì¼ë°˜ìŠ¬ë¡¯ì´ ì•„ë‹ˆì˜€ë‹¤ë©´ ë¦¬í„´
+        if (m_dragSlot.activeSelf == false)             //Ã³À½ µå·¡±× ´ë»óÀÌ ÀÏ¹İ½½·ÔÀÌ ¾Æ´Ï¿´´Ù¸é ¸®ÅÏ
             return;
 
-        m_dragSlotCtrl.m_itemInfo = null;     //ë“œë˜ê·¸ ìŠ¬ë¡¯ì˜ ì•„ì´í…œ ì •ë³´ ì´ˆê¸°í™”
-        m_targetSlotCtrl = null;              //ë‹´ì•˜ë˜ OnDrop ëŒ€ìƒì˜ ì •ë³´ ì´ˆê¸°í™”
-        m_slotCtrl = null;                    //ë‹´ì•˜ë˜ OnBeginDrag ëŒ€ìƒì˜ ì •ë³´ ì´ˆê¸°í™”
-        m_dragSlot.SetActive(false);          //ë“œë˜ê·¸ ìŠ¬ë¡¯ ì˜¤ë¸Œì íŠ¸ ë„ê¸°        
-    }
-   
+        m_dragSlotCtrl.m_itemInfo = null;     //µå·¡±× ½½·ÔÀÇ ¾ÆÀÌÅÛ Á¤º¸ ÃÊ±âÈ­
+        m_targetSlotCtrl = null;              //´ã¾Ò´ø OnDrop ´ë»óÀÇ Á¤º¸ ÃÊ±âÈ­
+        m_slotCtrl = null;                    //´ã¾Ò´ø OnBeginDrag ´ë»óÀÇ Á¤º¸ ÃÊ±âÈ­
+        m_dragSlot.SetActive(false);          //µå·¡±× ½½·Ô ¿ÀºêÁ§Æ® ²ô±â        
+    }       
 
-    private void ChangeSlot()           //ìŠ¬ë¡¯ì˜ ì •ë³´ ë°”ê¿”ì£¼ê¸°
+    public void SetSlot()
+    {                                      
+        Cursor.lockState = CursorLockMode.None;                             //Áİ´Âµ¿¾È ¸¶¿ì½º Ä¿¼­ ³ªÅ¸³ª°Ô ÇÏ±â
+
+        int a_remainCount = m_rootFullSlotCount - PlayerCtrl.inst.m_itemList.Count;      //ÀüÃ¼ ½½·Ô°³¼ö - ÇöÀç ÇÃ·¹ÀÌ¾î ÁÖÀ§ÀÇ ¾ÆÀÌÅÛ °³¼ö = Ãß°¡·Î »ı¼ºÇØÁà¾ßÇÒ ½½·Ô °³¼ö
+        
+        for (int rootadd = 0; rootadd < m_rootFullSlotCount; rootadd++)     //rootPanelÀÇ ÃÖ´ë ½½·Ô °³¼ö¸¸Å­ ½½·Ô »ı¼º
+        {
+            if(rootadd < a_remainCount)             //Ãß°¡ »ı¼ºÀÌ ÇÊ¿äÇÑ ½½·Ô °³¼ö¸¸Å­ ¸®½ºÆ® Ãß°¡
+            {
+                ItemInfo a_ItemInfo = new ItemInfo();
+                PlayerCtrl.inst.m_itemList.Add(a_ItemInfo);
+            }
+            GameObject a_slotobj = Instantiate(m_slotObj);                   //½½·Ô »ı¼º
+            a_slotobj.transform.SetParent(m_rootPanel.transform, false);    //½½·ÔÀ» rootPanelÀÇ Â÷ÀÏµå·Î ÀÌµ¿
+            SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();           //½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â
+            a_slotc.m_itemInfo = PlayerCtrl.inst.m_itemList[rootadd];           
+        }
+        
+        for (int invenadd = 0; invenadd < GlobalValue.g_userItem.Count; invenadd++)     //ÀÎº¥Åä¸® ÆĞ³Î¿¡ ¸Â´Â ½½·Ô °³¼ö¸¸Å­ ½½·Ô »ı¼º
+        {            
+            GameObject a_slotobj = Instantiate(m_slotObj);                    //½½·Ô »ı¼º
+            a_slotobj.transform.SetParent(m_invenPanel.transform, false);   //½½·ÔÀ» InvenPanelÀÇ Â÷ÀÏµå·Î ÀÌµ¿                                                      
+            SlotCtrl a_slotc = a_slotobj.GetComponent<SlotCtrl>();            //½½·ÔÀÇ SlotCtrl ½ºÅ©¸³Æ® °¡Á®¿À±â             
+            a_slotc.m_itemInfo = GlobalValue.g_userItem[invenadd];        //À¯Àú°¡ °¡Áö°íÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¤º¸ °¡Á®¿À±â                
+        }
+
+        for (int equippedSlot = 0; equippedSlot < GlobalValue.g_equippedItem.Count; equippedSlot++)     //Àåºñ ÆĞ³Î¿¡ ¸Â´Â ½½·Ô °³¼ö¸¸Å­ ½½·Ô Á¤º¸ ÀúÀå
+        {
+            m_equipmentPanel.transform.GetChild(equippedSlot).GetComponent<SlotCtrl>().m_itemInfo =
+                GlobalValue.g_equippedItem[equippedSlot];
+        }        
+    }
+
+    public void DelSlot()
+    {        
+        for (int i = 0; i < m_rootFullSlotCount; i++)        //rootPanel¿¡ µéÀº slot¿ÀºêÁ§Æ® °³¼ö¸¸Å­ ½ÇÇà                                  
+            Destroy(m_rootPanel.transform.GetChild(i).gameObject);        //slot ¿ÀºêÁ§Æ® »èÁ¦        
+       
+        PlayerCtrl.inst.m_itemList.RemoveAll( a =>          //rootPanelÀÇ ½½·ÔÁß ºó ½½·ÔÀÇ Á¤º¸¸¸ ¸®½ºÆ®¿¡¼­ »èÁ¦
+            a.m_itType == ItemType.Null);
+
+        for (int j = 0; j < m_invenPanel.transform.childCount; j++)       //invenPanel¿¡ µéÀº slot¿ÀºêÁ§Æ® °³¼ö¸¸Å­ ½ÇÇà
+            Destroy(m_invenPanel.transform.GetChild(j).gameObject);      //ÇØ´ç slot¿ÀºêÁ§Æ® »èÁ¦        
+
+        if (Cursor.lockState == CursorLockMode.None)
+            Cursor.lockState = CursorLockMode.Locked;    //¸¶¿ì½ºÄ¿¼­ ´Ù½Ã Àá±×±â
+    }    
+
+    void DelItemList(SlotCtrl a_SlotCtrl)
     {
-        m_slotCtrl.m_itemInfo = m_targetSlotCtrl.m_itemInfo;                
-        m_targetSlotCtrl.m_itemInfo = m_dragSlotCtrl.m_itemInfo;
-        m_slotCtrl.ChangeImg();
-        m_targetSlotCtrl.ChangeImg();
+        if (a_SlotCtrl.gameObject.name != "RootPanel")        
+            a_SlotCtrl.m_itemInfo.m_isDropped = false;        
     }
 }
