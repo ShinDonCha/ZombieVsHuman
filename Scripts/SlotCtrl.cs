@@ -65,7 +65,16 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
         m_itemInfo = GlobalValue.g_equippedItem[(int)m_itemInfo.m_itType];  //현재 슬롯의 정보 바꾸기
         ChangeImg();                                                        //현재 슬롯의 이미지 바꾸기
         SaveList(a_GO);                                                //장착된 장비의 정보 저장
-        SaveList(transform.parent.gameObject);                         //장착해제된 장비의 정보 저장        
+        SaveList(transform.parent.gameObject);                         //장착해제된 장비의 정보 저장
+
+        ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
+        for (int i = 0; i < a_items.Length; i++)
+        {
+            if (a_items[i].m_itemInfo.m_isDropped == false)
+                Destroy(a_items[i].gameObject);
+        }
+
+        a_DDCtrl.ItemSetting();
     }
 
     void Remove()

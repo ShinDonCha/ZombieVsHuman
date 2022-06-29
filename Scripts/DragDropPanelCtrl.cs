@@ -69,40 +69,9 @@ public class DragDropPanelCtrl : MonoBehaviour, IBeginDragHandler, IDragHandler,
             m_targetSlotCtrl.ChangeImg();                                        //바뀐 정보대로 이미지 교체
             m_slotCtrl.SaveList(m_slotCtrl.transform.parent.gameObject);         //판넬 종류별로 연동된 리스트에 정보 저장
             m_targetSlotCtrl.SaveList(m_targetSlotCtrl.transform.parent.gameObject);    //판넬 종류별로 연동된 리스트에 정보 저장
-
-            //DelItemList(m_slotCtrl);
-            //DelItemList(m_targetSlotCtrl);
         }
 
-        // RootPanel 에서 Inventory Panel로 드랍할떄 월드맵에 있는 아이템 삭제
-        ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
-        for (int i = 0; i < a_items.Length; i++)
-        {
-            if (a_items[i].m_itemInfo.m_isDropped == false)
-            {                
-                Destroy(a_items[i].gameObject);
-            }
-        }
-
-        // Inventory Panel 에서 RootPanel 로 드랍할 때 월드맵에 있는 아이템 생성
-        for (int WorlditCount = 0; WorlditCount < PlayerCtrl.inst.m_itemList.Count; WorlditCount++)
-        {
-            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_itName == ItemName.Null)         //빈 슬롯이면 넘어감
-                continue;
-            
-            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped == false)              //현재 드랍중이지 않은(리스트에 정보로만 존재하는)슬롯만 아이템의 외형 생성
-            {                
-                //생성
-                PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped = true;
-
-                int a_rndX = Random.Range(-1, 2);
-                int a_rndZ = Random.Range(-1, 2);
-                GameObject a_Item = Instantiate(m_worldItem);                                //아이템 모델을 담을 아이템프리팹 생성
-                a_Item.transform.position = PlayerCtrl.inst.transform.position + new Vector3(a_rndX, 1, a_rndZ);  //생성위치를 플레이어 주위의 랜덤값 위치로 함
-                a_Item.GetComponent<ItemCtrl>().m_itemInfo = PlayerCtrl.inst.m_itemList[WorlditCount];            //생성된 아이템의 정보를 리스트와 일치하게 변경                              
-            }             
-        }
-        // Inventory Panel 에서 RootPanel 로 드랍할 때 월드맵에 있는 아이템 생성
+        ItemSetting();
     }
     // 마우스 드래그가 끝났을 때 발생하는 이벤트
     public void OnEndDrag(PointerEventData eventData)
@@ -163,11 +132,35 @@ public class DragDropPanelCtrl : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         if (Cursor.lockState == CursorLockMode.None)
             Cursor.lockState = CursorLockMode.Locked;    //마우스커서 다시 잠그기
-    }    
+    }  
 
-    void DelItemList(SlotCtrl a_SlotCtrl)
+    public void ItemSetting()
     {
-        if (a_SlotCtrl.gameObject.name != "RootPanel")        
-            a_SlotCtrl.m_itemInfo.m_isDropped = false;        
+        // RootPanel 에서 Inventory Panel로 드랍할떄 월드맵에 있는 아이템 삭제
+        ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
+        for (int i = 0; i < a_items.Length; i++)
+        {
+            if (a_items[i].m_itemInfo.m_isDropped == false)
+                Destroy(a_items[i].gameObject);
+        }
+
+        // Inventory Panel 에서 RootPanel 로 드랍할 때 월드맵에 있는 아이템 생성
+        for (int WorlditCount = 0; WorlditCount < PlayerCtrl.inst.m_itemList.Count; WorlditCount++)
+        {
+            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_itName == ItemName.Null)         //빈 슬롯이면 넘어감
+                continue;
+
+            if (PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped == false)              //현재 드랍중이지 않은(리스트에 정보로만 존재하는)슬롯만 아이템의 외형 생성
+            {
+                PlayerCtrl.inst.m_itemList[WorlditCount].m_isDropped = true;
+
+                int a_rndX = Random.Range(-1, 2);
+                int a_rndZ = Random.Range(-1, 2);
+                GameObject a_Item = Instantiate(m_worldItem);                                //아이템 모델을 담을 아이템프리팹 생성
+                a_Item.transform.position = PlayerCtrl.inst.transform.position + new Vector3(a_rndX, 1, a_rndZ);  //생성위치를 플레이어 주위의 랜덤값 위치로 함
+                a_Item.GetComponent<ItemCtrl>().m_itemInfo = PlayerCtrl.inst.m_itemList[WorlditCount];            //생성된 아이템의 정보를 리스트와 일치하게 변경                              
+            }
+        }
+        // Inventory Panel 에서 RootPanel 로 드랍할 때 월드맵에 있는 아이템 생성
     }
 }
