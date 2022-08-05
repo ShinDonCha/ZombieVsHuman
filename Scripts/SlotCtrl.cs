@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SlotCtrl : MonoBehaviour, IPointerClickHandler
+public class SlotCtrl : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 {
-    public ItemInfo m_itemInfo = new ItemInfo();            //현재 슬롯의 아이템 정보    
+    public ItemInfo m_itemInfo = null;  //현재 슬롯의 아이템 정보
 
     private float m_timer = 0.0f;          //계산용 변수
     private float m_equipTime = 2.0f;      //아이템 장착시 필요한 시간
 
+    public GameObject m_itemImg = null;    //아이템이미지 게임오브젝트를 담을 변수
     public GameObject m_timerImg = null;   //타이머이미지 게임오브젝트를 담을 변수
 
     void Start()
@@ -20,10 +21,13 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
 
     void Update()
     {        
+        if (InGameMgr.s_gameState == GameState.GamePaused)
+            return;
+
         if (this.gameObject.CompareTag("DragSlot"))             //드래그 슬롯일 경우 리턴
             return;
         
-        if (m_timerImg.activeSelf == true && m_itemInfo.m_itName != ItemName.Null)      //마우스 우클릭으로 타이머가 켜지고, 빈 슬롯이 아닐 경우..
+        if (m_timerImg.activeSelf == true && m_itemInfo.m_itName != ItemName.Kick)      //마우스 우클릭으로 타이머가 켜지고, 빈 슬롯이 아닐 경우..
         {
             m_timer += Time.deltaTime;
             m_timerImg.GetComponent<Image>().fillAmount = m_timer / m_equipTime;
@@ -35,29 +39,22 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
                 if(gameObject.name.Contains("Slot"))          //선택된 슬롯이 인벤토리 판넬 또는 루트판넬의 슬롯일 경우
                     Equip();                
                 else                                          //장비 판넬의 슬롯일 경우
-                    Remove();                                
+                    Remove();
+
+                NetworkMgr.inst.PushPacket(PacketType.ItemChange);
             }
         }
     }
 
     public void ChangeImg()
     {
-        if (m_itemInfo.m_itName == ItemName.Null)       //해당 슬롯이 비어있는 슬롯이면
-        {
-            transform.GetChild(0).GetComponent<Image>().sprite = null;      //슬롯의 이미지를 빈 이미지로
-        }
-        else if (m_itemInfo.m_itName != ItemName.Null)  //해당 슬롯이 무기정보가 들어있는 슬롯이면
-        {
-            if (transform.childCount != 0)          //일반 슬롯 일경우 차일드의 이미지 변경
-                transform.GetChild(0).GetComponent<Image>().sprite = m_itemInfo.m_iconImg;
-            else                                   //드래그 슬롯 일경우 본인의 이미지 변경
-                this.GetComponent<Image>().sprite = m_itemInfo.m_iconImg;
-        }
+        m_itemImg.GetComponent<Image>().sprite = m_itemInfo.m_iconImg;
+        m_itemImg.transform.localScale = (Vector3)m_itemInfo.m_iconSize;
     }
 
     void Equip()
     {
-        DragDropPanelCtrl a_DDCtrl = FindObjectOfType<DragDropPanelCtrl>();
+        DragDropPanelCtrl a_DDCtrl = CanvasCtrl.inst.gameObject.GetComponentInChildren<DragDropPanelCtrl>();
         GameObject a_GO = a_DDCtrl.m_equipmentPanel;                        //장비판넬 게임오브젝트를 담은 변수 가져오기
         SlotCtrl a_SC = a_GO.transform.GetChild((int)m_itemInfo.m_itType).GetComponent<SlotCtrl>(); //현재 슬롯의 아이템타입과 일치하는 장비판넬 슬롯의 SlotCtrl 가져오기
         a_SC.m_itemInfo = m_itemInfo;           //장비판넬 슬롯의 정보 바꾸기
@@ -67,19 +64,19 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
         SaveList(a_GO);                                                //장착된 장비의 정보 저장
         SaveList(transform.parent.gameObject);                         //장착해제된 장비의 정보 저장
 
-        ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
-        for (int i = 0; i < a_items.Length; i++)
-        {
-            if (a_items[i].m_itemInfo.m_isDropped == false)
-                Destroy(a_items[i].gameObject);
-        }
+        //ItemCtrl[] a_items = FindObjectsOfType<ItemCtrl>();
+        //for (int i = 0; i < a_items.Length; i++)
+        //{
+        //    if (a_items[i].m_itemInfo.m_isDropped == false)
+        //        Destroy(a_items[i].gameObject);
+        //}
 
         a_DDCtrl.ItemSetting();
     }
 
     void Remove()
     {
-        DragDropPanelCtrl a_DDCtrl = FindObjectOfType<DragDropPanelCtrl>();
+        DragDropPanelCtrl a_DDCtrl = CanvasCtrl.inst.gameObject.GetComponentInChildren<DragDropPanelCtrl>();
         GameObject a_GO = a_DDCtrl.m_invenPanel;                            //인벤토리 판넬 게임오브젝트를 담은 변수 가져오기
 
         for (int i = 0; i < GlobalValue.g_invenFullSlotCount; i++)          //인벤토리 슬롯의 최대개수 만큼 실행
@@ -97,7 +94,9 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
             }
             else
                 continue;                                                   //빈 슬롯이 아닐 경우 넘어가기   
-        }        
+        }
+
+        SoundMgr.inst.m_audioSource.Play();
     }
 
     List<ItemInfo> FindList(GameObject a_Panel)                             //판넬별 정보 저장할 리스트 찾기
@@ -140,5 +139,57 @@ public class SlotCtrl : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        //if (a_DDCtrl.m_informOnOff == false)        //정보보기 상태가 아니라면
+        //    return;
+        
+        if (eventData.pointerCurrentRaycast.gameObject.tag.Contains("DragSlot"))        //드래그 슬롯일 경우 취소
+            return;
+
+        DragDropPanelCtrl a_DDCtrl = CanvasCtrl.inst.gameObject.GetComponentInChildren<DragDropPanelCtrl>();
+
+        if (m_itemInfo.m_itType == ItemType.Null)               //기본 무기일 경우 취소
+        {
+            a_DDCtrl.m_information.SetActive(false);
+            return;
+        }
+        
+        a_DDCtrl.m_information.SetActive(true);
+
+        //----- 정보창 위치설정
+        Vector3 a_Pos = transform.position;
+        a_Pos.x += 150.0f;                                  //슬롯으로부터 x축으로 150.0f만큼 위치로 정보창 옮기기
+        a_DDCtrl.m_information.transform.position = a_Pos;
+        
+        Vector3[] a_informRect = new Vector3[4];                        
+        a_DDCtrl.m_information.GetComponent<RectTransform>().GetWorldCorners(a_informRect);     //정보창의 네 귀퉁이 위치를 가져옴
+
+        if (a_informRect[0].y < a_DDCtrl.m_rectCorner[0].y)                      //정보창이 드래그앤드랍 판넬보다 아래에 있을 때
+            a_Pos.y += (a_DDCtrl.m_rectCorner[0].y - a_informRect[0].y);         //차이만큼 정보창을 위로 올려줌
+
+        else if (a_DDCtrl.m_rectCorner[1].y < a_informRect[1].y)                 //정보창이 드래그앤드랍 판넬보다 위에 있을 때
+            a_Pos.y -= (a_informRect[1].y- a_DDCtrl.m_rectCorner[1].y);          //차이만큼 정보창을 아래로 내려줌
+
+        if (a_DDCtrl.m_rectCorner[2].x < a_informRect[2].x)                      //정보창이 드래그앤드랍 판넬보다 오른쪽에 있을 때
+            a_Pos.x -= (a_informRect[2].x - a_DDCtrl.m_rectCorner[2].x);         //차이만큼 정보창을 왼쪽으로 옮김
+
+        a_DDCtrl.m_information.transform.position = a_Pos;
+        //----- 정보창 위치설정
+
+        //----- 정보창 내용설정
+        a_DDCtrl.m_nameText.text = m_itemInfo.m_name;
+
+        if (m_itemInfo.m_itName == ItemName.Bat)
+            a_DDCtrl.m_statText.text = string.Format("<color=#FF0000>대미지 : </color> {0}\n<color=#FF0000>내구도 : </color> 00\n" +
+                                                    "<color=#FF0000>공격 딜레이 : </color> {1}초",
+                                                      m_itemInfo.m_damage, m_itemInfo.m_attackDelay);
+        else
+            a_DDCtrl.m_statText.text = string.Format("<color=#FF0000>대미지 : </color> {0}\n<color=#FF0000>장전된 총알 : </color> {1}\n" +
+                                                    "<color=#FF0000>남은 총알 : </color> {2}\n<color=#FF0000>공격 딜레이 : </color> {3}초",
+                                                      m_itemInfo.m_damage, m_itemInfo.m_curMagazine, m_itemInfo.m_maxMagazine, m_itemInfo.m_attackDelay);
+
+        a_DDCtrl.m_explainText.text = m_itemInfo.m_itemEx;
+        //----- 정보창 내용설정
+    }
 }

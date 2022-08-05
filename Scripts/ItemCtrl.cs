@@ -17,25 +17,16 @@ public class ItemCtrl : MonoBehaviour
 
     public void ModelSet()
     {
-        int a_Num = 0;        
+        int a_Num = 0;
 
-        switch (m_itemInfo.m_itName)
+        if (m_itemInfo.m_itName == ItemName.Kick)           //좀비에게서 드랍된 아이템일 경우 랜덤으로 설정
         {
-            case ItemName.Bat:
-                a_Num = (int)ItemName.Bat;                
-                break;
-            case ItemName.M16:
-                a_Num = (int)ItemName.M16;
-                break;
-            case ItemName.K2:
-                a_Num = (int)ItemName.K2;
-                break;
-            case ItemName.Null:                 //특정된 아이템이 아닐경우 랜덤으로 생성
-                a_Num = Random.Range(0, m_itemInven.Length);
-                m_itemInfo.SetType((ItemName)a_Num);
-                break;                
+            a_Num = Random.Range(0, m_itemInven.Length);
+            m_itemInfo.SetType((ItemName)a_Num);
         }
-        
+        else
+            a_Num = (int)m_itemInfo.m_itName;
+
         m_itemInfo.m_isDropped = true;
         GameObject a_go = Instantiate(m_itemInven[a_Num]);          //아이템 정보에따라 정해진 외형으로 생성
         a_go.transform.SetParent(transform, false);                 //아이템 프리팹의 차일드로 모델 넣기        

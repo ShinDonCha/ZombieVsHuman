@@ -13,10 +13,13 @@ public class ConfirmBoxCtrl : MonoBehaviour
     {
         if (m_OKBtn != null)
             m_OKBtn.onClick.AddListener(() =>
-            Application.Quit());
+            {
+                NetworkMgr.inst.PushPacket(PacketType.ItemChange);
+                InGameMgr.s_gameState = GameState.GameEnd;
+            });
 
         if (m_CancelBtn != null)
-            m_CancelBtn.onClick.AddListener(() =>                            
+            m_CancelBtn.onClick.AddListener(() =>
                 Destroy(gameObject));
     
     }

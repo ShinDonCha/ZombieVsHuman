@@ -32,10 +32,15 @@ public class TitleMgr : MonoBehaviour
     string m_logInUrl;                                  //닷홈의 로그인 php url
     string m_signUpUrl;                                 //닷홈의 회원가입 php url
 
+    [Header("Sound Img")]
+    public Sprite[] m_soundSprite = null;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;    //마우스커서 열기
+        
         m_id_InputField.Select();                       //처음에 로그인 판넬 id inputfield에 커서 놓기
 
         if (m_logIn_Btn != null)
@@ -56,12 +61,12 @@ public class TitleMgr : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {        
+    {
         if (0.0f < m_msTimer)                   //메세지 출력, 삭제
         {
             m_msTimer -= Time.deltaTime;
-            if (m_msTimer < 0.0f)            
-                MessageOnOff("", false);                           
+            if (m_msTimer < 0.0f)
+                MessageOnOff("", false);
         }
 
         if (Input.GetKeyDown(KeyCode.Tab) ||        //tab키, enter키로 커서 옮기기
@@ -119,8 +124,7 @@ public class TitleMgr : MonoBehaviour
 
             if (!sz.Contains("Login-Success!!") || !sz.Contains("{\""))      //로그인에 실패했거나 JSON형식이 아닐 경우
             {
-                Debug.Log(sz);
-                //ErrorMsg(sz);
+                ErrorMsg(sz);
                 yield break;
             }
 
@@ -131,18 +135,68 @@ public class TitleMgr : MonoBehaviour
                 yield break;
 
             GlobalValue.g_Unique_ID = idStr;    //글로벌 변수에 저장
+            GlobalValue.InitData();             //기본 아이템 목록 생성
 
             if (N["nick_name"] != null)
                 GlobalValue.g_NickName = N["nick_name"];
-            if (N["best_score"] != null)
-                GlobalValue.g_BestScore = N["best_score"].AsInt;
-            if (N["gold"] != null)
-                GlobalValue.g_UserGold = N["gold"].AsInt;
+            //if (N["best_score"] != null)
+            //    GlobalValue.g_BestScore = N["best_score"].AsInt;
+            //if (N["gold"] != null)
+            //    GlobalValue.g_UserGold = N["gold"].AsInt;
+            if (N["info1"] != null && N["info2"] != null && N["info3"] != null)         //기존 유저일 경우
+            {
+                string[] a_strJson = new string[3];
+                a_strJson[0] = N["info1"];          //아이템 이름
+                a_strJson[1] = N["info2"];          //장전된 총알 수
+                a_strJson[2] = N["info3"];          //남은 총알 수
 
-            SceneManager.LoadScene("SampleScene");
+                if (a_strJson[0] != "" && a_strJson[1] != "" && a_strJson[2] != "")
+                {
+                    JSONNode[] a_JS = new JSONNode[3];
+                    for (int i = 0; i < a_JS.Length; i++)
+                        a_JS[i] = JSON.Parse(a_strJson[i]);
+
+                    for (int j = 0; j < a_JS[0].Count; j++)
+                        if (j < GlobalValue.g_equippedItem.Count)
+                        {
+                            GlobalValue.g_equippedItem[j].SetType((ItemName)System.Enum.Parse(typeof(ItemName), a_JS[0][j]));
+                            GlobalValue.g_equippedItem[j].m_curMagazine = a_JS[1][j];
+                            GlobalValue.g_equippedItem[j].m_maxMagazine = a_JS[2][j];
+                        }
+                        else
+                        {
+                            GlobalValue.g_userItem[j - 3].SetType((ItemName)System.Enum.Parse(typeof(ItemName), a_JS[0][j]));
+                            GlobalValue.g_userItem[j - 3].m_curMagazine = a_JS[1][j];
+                            GlobalValue.g_userItem[j - 3].m_maxMagazine = a_JS[2][j];
+                        }
+                }
+            }
+            if (N["config"] != null)            //기존 유저라면
+            {
+                JSONNode a_JS = JSON.Parse(N["config"]);
+
+                foreach (var a_img in m_soundSprite)
+                {
+                    if (a_img.name == a_JS[0])
+                        GlobalValue.g_cfBGImg = a_img;
+                    if (a_img.name == a_JS[2])
+                        GlobalValue.g_cfEffImg = a_img;
+                }
+                GlobalValue.g_cfBGValue = float.Parse(a_JS[1]);
+                GlobalValue.g_cfEffValue = float.Parse(a_JS[3]);
+            }
+            else //if (N["config"] == null)
+            {
+                GlobalValue.g_cfBGImg = m_soundSprite[2];       //최대 음량 이미지
+                GlobalValue.g_cfEffImg = m_soundSprite[2];      //최대 음량 이미지
+            }
+
+            SceneManager.LoadScene("InGameScene");
         }
-        else        
-            ErrorMsg(wRequest.error);      //에러 표시               
+        else
+        {
+            ErrorMsg(wRequest.error);      //에러 표시
+        }
     }
 
     void SignUp()
@@ -182,12 +236,12 @@ public class TitleMgr : MonoBehaviour
     {
         WWWForm wForm = new WWWForm();
         wForm.AddField("Input_user", idStr, System.Text.Encoding.UTF8);
-        wForm.AddField("Input_pass", pwStr, System.Text.Encoding.UTF8);
+        wForm.AddField("Input_pass", pwStr);
         wForm.AddField("Input_nick", nickStr, System.Text.Encoding.UTF8);
 
         UnityWebRequest wRequest = UnityWebRequest.Post(m_signUpUrl, wForm);
         yield return wRequest.SendWebRequest();
-
+              
         if (wRequest.error == null)
         {
             System.Text.Encoding enc = System.Text.Encoding.UTF8;
@@ -200,11 +254,11 @@ public class TitleMgr : MonoBehaviour
             }
             else
             {
-                ErrorMsg(sz);                
+                ErrorMsg(sz);       //동일한 ID, NickName이 있을 경우 오류 메시지 표시
                 yield break;
             }
         }
-        else        
+        else
             ErrorMsg(wRequest.error);
     }
 

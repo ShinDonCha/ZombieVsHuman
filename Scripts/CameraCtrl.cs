@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CameraCtrl : MonoBehaviour
 {
-    private GameObject m_player = null;             //플레이어 저장 할 변수
-
     //---- 회전값 계산
     private Vector3 m_basicPos = Vector3.zero;      //플레이어에게 적용하기 전에 줌 값만 적용한 카메라 위치
     private Vector3 m_changedRot = Vector3.zero;    //변경 된 회전값
@@ -15,14 +13,13 @@ public class CameraCtrl : MonoBehaviour
     //---- 회전값 계산
     
     private float m_zoomDistance = 0.0f;      //플레이어와 카메라 사이의 거리       
-    private float m_maxX = 60.0f;           //카메라 위아래 최대 rotation값
+    [HideInInspector] public float m_maxX = 60.0f;           //카메라 위아래 최대 rotation값
+    private float m_minX = -60.0f;
     
 
     // Start is called before the first frame update
     void Start()
-    {        
-        m_player = GameObject.Find("Player");        
-
+    {      
         m_zoomDistance = 2.0f;
         transform.rotation = Quaternion.Euler(Vector3.zero);
     }
@@ -34,7 +31,7 @@ public class CameraCtrl : MonoBehaviour
             return;
 
         //------- 카메라 회전
-        m_targetPos = m_player.transform.position;
+        m_targetPos = PlayerCtrl.inst.transform.position;
         m_targetPos.y += 2.8f;              
         
         m_changedRot.y += Input.GetAxis("Mouse X") * m_rotSpeed * Time.deltaTime;
@@ -42,8 +39,8 @@ public class CameraCtrl : MonoBehaviour
 
         if (m_maxX < m_changedRot.x)         //카메라 위아래 각도 제한
             m_changedRot.x = m_maxX;
-        if (m_changedRot.x < -m_maxX)
-            m_changedRot.x = -m_maxX;
+        if (m_changedRot.x < m_minX)
+            m_changedRot.x = m_minX;
 
         m_zoomDistance = 2 + Mathf.Sin((m_changedRot.x / (m_maxX * 2)) * Mathf.PI);     //카메라와 타겟의 거리 1 ~ 3      
 
@@ -58,7 +55,7 @@ public class CameraCtrl : MonoBehaviour
         //------- 플레이어 회전        
         Vector3 a_CamForward = transform.forward;
         a_CamForward.y = 0.0f;
-        m_player.transform.forward = a_CamForward;        
+        PlayerCtrl.inst.transform.forward = a_CamForward;        
         //------- 플레이어 회전
     }
 }
