@@ -31,6 +31,7 @@ public class TitleMgr : MonoBehaviour
 
     string m_logInUrl;                                  //닷홈의 로그인 php url
     string m_signUpUrl;                                 //닷홈의 회원가입 php url
+    string m_saveCharUrl;                               //캐릭터 저장 위치
 
     [Header("Sound Img")]
     public Sprite[] m_soundSprite = null;
@@ -40,11 +41,11 @@ public class TitleMgr : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;    //마우스커서 열기
-        
+
         m_id_InputField.Select();                       //처음에 로그인 판넬 id inputfield에 커서 놓기
 
         if (m_logIn_Btn != null)
-            m_logIn_Btn.onClick.AddListener(LogIn);        
+            m_logIn_Btn.onClick.AddListener(LogIn);
 
         if (m_signUp_Btn != null)
             m_signUp_Btn.onClick.AddListener(SignUpPanelOn);
@@ -55,8 +56,9 @@ public class TitleMgr : MonoBehaviour
         if (m_create_Btn != null)
             m_create_Btn.onClick.AddListener(SignUp);
 
-        m_logInUrl = "http://dhosting.dothome.co.kr/LogIn.php";
-        m_signUpUrl = "http://dhosting.dothome.co.kr/SignUp.php";
+        m_logInUrl = "http://zombiehuman.dothome.co.kr/LogIn.php";
+        m_signUpUrl = "http://zombiehuman.dothome.co.kr/SignUp.php";
+        m_saveCharUrl = "http://zombiehuman.dothome.co.kr/CharPos.php";
     }
 
     // Update is called once per frame
@@ -71,11 +73,11 @@ public class TitleMgr : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab) ||        //tab키, enter키로 커서 옮기기
             (Input.GetKeyDown(KeyCode.Return) && !EventSystem.current.currentSelectedGameObject.name.Contains("Btn")))
-        {            
+        {
             Selectable nextSelect = EventSystem.current.currentSelectedGameObject.          //현재 선택되어있는 게임오브젝트의 Select On Down 부분 가져오기
                                     GetComponent<Selectable>().FindSelectableOnDown();
 
-            if (nextSelect != null)            
+            if (nextSelect != null)
                 nextSelect.Select();         //Select On Down에 등록된 오브젝트 선택하기
         }
     }
@@ -85,19 +87,19 @@ public class TitleMgr : MonoBehaviour
         string a_idStr = m_id_InputField.text.Trim();
         string a_pwStr = m_pw_InputField.text.Trim();
 
-        if(a_idStr == "" || a_pwStr == "")
+        if (a_idStr == "" || a_pwStr == "")
         {
             MessageOnOff("ID와 PW를 빈칸없이 입력해야 합니다.");
             return;
         }
 
-        if(!(3 <= a_idStr.Length && a_idStr.Length <= 10))
+        if (!(3 <= a_idStr.Length && a_idStr.Length <= 10))
         {
             MessageOnOff("ID는 3글자 이상 10글자 이하로 입력해 주세요.");
             return;
         }
 
-        if(!(4 <= a_pwStr.Length && a_pwStr.Length <= 15))
+        if (!(4 <= a_pwStr.Length && a_pwStr.Length <= 15))
         {
             MessageOnOff("PW는 4글자 이상 15글자 이하로 입력해 주세요.");
             return;
@@ -111,10 +113,13 @@ public class TitleMgr : MonoBehaviour
         GlobalValue.g_Unique_ID = "";
 
         WWWForm wForm = new WWWForm();
+
         wForm.AddField("Input_user", idStr, System.Text.Encoding.UTF8);
         wForm.AddField("Input_pass", pwStr, System.Text.Encoding.UTF8);
 
+
         UnityWebRequest wRequest = UnityWebRequest.Post(m_logInUrl, wForm);
+
         yield return wRequest.SendWebRequest();
 
         if (wRequest.error == null)
@@ -136,6 +141,25 @@ public class TitleMgr : MonoBehaviour
 
             GlobalValue.g_Unique_ID = idStr;    //글로벌 변수에 저장
             GlobalValue.InitData();             //기본 아이템 목록 생성
+
+
+            if (N["Char_pos"] != null)
+            {
+                JSONNode c_JS = JSON.Parse(N["Char_pos"]);
+                string[] CharPos = new string[2];
+
+                CharPos[0] = c_JS[0];
+                CharPos[1] = c_JS[1];
+                Debug.Log(CharPos[0] + ":" + CharPos[1]);
+                float a = (float.Parse(CharPos[0]));
+                float b = (float.Parse(CharPos[1]));
+
+                GlobalValue.g_CharPos = new Vector3(a, (float)100.1, b);
+            }
+            else
+            {
+                GlobalValue.g_CharPos = new Vector3((float)-838.7, (float)100.08, (float)983.72);
+            }
 
             if (N["nick_name"] != null)
                 GlobalValue.g_NickName = N["nick_name"];
@@ -187,6 +211,8 @@ public class TitleMgr : MonoBehaviour
             }
             else //if (N["config"] == null)
             {
+
+                GlobalValue.g_StandUpAnim = 1;
                 GlobalValue.g_cfBGImg = m_soundSprite[2];       //최대 음량 이미지
                 GlobalValue.g_cfEffImg = m_soundSprite[2];      //최대 음량 이미지
             }
@@ -241,7 +267,7 @@ public class TitleMgr : MonoBehaviour
 
         UnityWebRequest wRequest = UnityWebRequest.Post(m_signUpUrl, wForm);
         yield return wRequest.SendWebRequest();
-              
+
         if (wRequest.error == null)
         {
             System.Text.Encoding enc = System.Text.Encoding.UTF8;
@@ -269,15 +295,15 @@ public class TitleMgr : MonoBehaviour
         m_signUpPanel.SetActive(false);
         m_logInPanel.SetActive(true);
         InputFieldClear();
-        m_id_InputField.Select();        
+        m_id_InputField.Select();
     }
-    
+
     void SignUpPanelOn()
     {
         m_logInPanel.SetActive(false);
         m_signUpPanel.SetActive(true);
         InputFieldClear();
-        m_newid_InputField.Select();        
+        m_newid_InputField.Select();
     }
 
     void InputFieldClear()
@@ -295,13 +321,13 @@ public class TitleMgr : MonoBehaviour
         if (m_messageText == null)
             return;
 
-        if(isOn == true)
+        if (isOn == true)
         {
             m_messageText.text = Message;
             m_msTimer = 3.0f;
         }
-        else        
-            m_messageText.text = "";        
+        else
+            m_messageText.text = "";
 
         m_messageText.gameObject.SetActive(isOn);
     }
@@ -315,7 +341,7 @@ public class TitleMgr : MonoBehaviour
         else if (str.Contains("ID does exist."))
             MessageOnOff("같은 ID가 이미 존재합니다.");
         else if (str.Contains("Nickname does exist."))
-            MessageOnOff("같은 NickName이 이미 존재합니다.");        
+            MessageOnOff("같은 NickName이 이미 존재합니다.");
         else
             MessageOnOff(str);
     }
